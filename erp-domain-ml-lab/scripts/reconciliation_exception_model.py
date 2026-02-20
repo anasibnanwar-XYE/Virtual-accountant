@@ -26,6 +26,7 @@ from ledgerstudio_analytics.ml.nn_text_classifier import (
     train_mlp_text_classifier_from_features,
 )
 from ledgerstudio_analytics.ml.tokenize import join_fields
+from _row_source import detect_training_format, iter_rows_from_file
 
 MODEL_ID = "orchestrator_erp.reconciliation_exception_model.v1"
 BUNDLE_KIND = "reconciliation_exception_registry"
@@ -62,6 +63,25 @@ NUMERIC_FEATURES = [
     "has_discount_account",
     "complexity_ratio",
 ]
+RECON_TRAINING_COLUMNS = (
+    "type",
+    "reference",
+    "date",
+    "qty",
+    "price",
+    "cost",
+    "tax_rate",
+    "party",
+    "notes",
+    "doc_type",
+    "doc_status",
+    "memo",
+    "payment_method",
+    "gst_treatment",
+    "gst_inclusive",
+    "currency",
+    "journal_lines",
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -305,15 +325,24 @@ def _example_from_row(row: dict[str, Any], *, idx: int, seed: int, exception_thr
     return ReconExample(example_id=example_id, text=text, numeric=numeric, label=label, meta=meta)
 
 
-def _rows_from_training_csv(path: Path, *, exception_threshold: float, seed: int) -> list[ReconExample]:
-    if not path.exists() or not path.is_file():
-        raise AnalyticsError(ExitCode.INVALID_ARGS, f"Training CSV not found: {path}")
-
+def _rows_from_training_csv(
+    path: Path,
+    *,
+    exception_threshold: float,
+    seed: int,
+    training_format: str = "auto",
+    parquet_batch_size: int = 100000,
+) -> list[ReconExample]:
     out: list[ReconExample] = []
-    with path.open("r", encoding="utf-8", newline="") as f:
-        reader = csv.DictReader(f)
-        for idx, row in enumerate(reader):
-            out.append(_example_from_row(row, idx=idx, seed=seed, exception_threshold=exception_threshold, source="training_csv"))
+    for idx, row in enumerate(
+        iter_rows_from_file(
+            path,
+            requested_format=training_format,
+            parquet_columns=RECON_TRAINING_COLUMNS,
+            parquet_batch_size=parquet_batch_size,
+        )
+    ):
+        out.append(_example_from_row(row, idx=idx, seed=seed, exception_threshold=exception_threshold, source="training_csv"))
 
     if not out:
         raise AnalyticsError(ExitCode.INVALID_ARGS, "No rows available for reconciliation-exception training")
@@ -572,7 +601,15 @@ def _rows_from_override_memory(path: Path, *, exception_threshold: float, seed: 
 
 
 def _cmd_train(args: argparse.Namespace) -> int:
-    base_rows = _rows_from_training_csv(Path(args.training_csv), exception_threshold=args.exception_threshold, seed=args.seed)
+    training_path = Path(args.training_csv)
+    training_format = detect_training_format(training_path, requested=args.training_format)
+    base_rows = _rows_from_training_csv(
+        training_path,
+        exception_threshold=args.exception_threshold,
+        seed=args.seed,
+        training_format=training_format,
+        parquet_batch_size=args.parquet_batch_size,
+    )
     override_rows: list[ReconExample] = []
     if args.override_memory_jsonl:
         override_rows = _rows_from_override_memory(
@@ -630,8 +667,11 @@ def _cmd_train(args: argparse.Namespace) -> int:
 
     config = {
         "dataset": {
-            "training_csv": Path(args.training_csv).name,
-            "training_csv_sha256": sha256_file(Path(args.training_csv)),
+            "training_csv": training_path.name,
+            "training_csv_sha256": sha256_file(training_path),
+            "training_file": training_path.name,
+            "training_file_sha256": sha256_file(training_path),
+            "training_format": training_format,
             "exception_threshold": float(args.exception_threshold),
             "override_memory_jsonl": Path(args.override_memory_jsonl).as_posix() if args.override_memory_jsonl else None,
             "override_memory_sha256": sha256_file(Path(args.override_memory_jsonl)) if args.override_memory_jsonl else None,
@@ -650,6 +690,7 @@ def _cmd_train(args: argparse.Namespace) -> int:
             "max_hash_cache": args.max_hash_cache,
             "device": device_info.to_manifest(),
             "holdout_ratio": args.holdout_ratio,
+            "parquet_batch_size": args.parquet_batch_size,
         },
     }
 
@@ -739,7 +780,9 @@ def _build_parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="command", required=True)
 
     t = sub.add_parser("train", help="Train reconciliation-exception model")
-    t.add_argument("--training-csv", required=True)
+    t.add_argument("--training-csv", required=True, help="Training input file (CSV or Parquet)")
+    t.add_argument("--training-format", choices=["auto", "csv", "parquet"], default="auto")
+    t.add_argument("--parquet-batch-size", type=int, default=100000)
     t.add_argument("--out", required=True, help="Model root directory")
     t.add_argument("--metrics-out", default=None)
     t.add_argument("--override-memory-jsonl", default=None)

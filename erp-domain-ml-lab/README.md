@@ -75,6 +75,8 @@ erp-domain-ml-lab/
     33_apply_user_personalization.sh
     34_personalization_guardrail_smoke.sh
     35_monitor_virtual_accountant_learning.sh
+    36_convert_training_csv_to_parquet.py
+    _row_source.py
     accountant_explanation_pack.py
     gst_tax_audit.py
     tax_aware_coa_overlay.py
@@ -197,6 +199,35 @@ python3 scripts/29_rebalance_training_by_erp_flow.py \
   --profile-json configs/erp_v2_flow_targets.json \
   --report-out /path/to/rebalance_report.json
 ```
+
+## Parquet Headroom (Optional)
+
+For large synthetic corpora, you can convert training CSV once and train from Parquet.
+
+Install optional dependency:
+
+```bash
+source .venv/bin/activate
+pip install pyarrow
+```
+
+Convert CSV to Parquet:
+
+```bash
+python3 scripts/36_convert_training_csv_to_parquet.py \
+  --input-csv data/training/workflow_synth_train_40000_411_20260219_194012.csv \
+  --output-parquet data/training/workflow_synth_train_40000_411_20260219_194012.parquet \
+  --compression zstd
+```
+
+Training scripts that accept CSV/Parquet on `--training-csv`:
+- `scripts/product_account_recommender.py train`
+- `scripts/review_risk_model.py train`
+- `scripts/reconciliation_exception_model.py train`
+
+Optional knobs:
+- `--training-format auto|csv|parquet` (default `auto`)
+- `--parquet-batch-size 100000`
 
 ## Product Account Suggestions
 

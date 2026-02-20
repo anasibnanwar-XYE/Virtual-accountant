@@ -27,6 +27,7 @@ from ledgerstudio_analytics.ml.nn_text_classifier import (
 )
 from ledgerstudio_analytics.ml.tokenize import join_fields
 from ledgerstudio_analytics.ml import training_data_v2 as td_v2
+from _row_source import detect_training_format, iter_rows_from_file
 
 MODEL_ID = "orchestrator_erp.product_account_recommender.v1"
 BUNDLE_KIND = "product_account_registry"
@@ -59,6 +60,19 @@ NUMERIC_FEATURES = [
     "history_tax_conf",
     "history_discount_conf",
 ]
+PRODUCT_TRAINING_COLUMNS = (
+    "sku",
+    "type",
+    "notes",
+    "memo",
+    "doc_type",
+    "party",
+    "qty",
+    "price",
+    "cost",
+    "tax_rate",
+    "journal_lines",
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -300,10 +314,12 @@ def _augment_with_synthetic(seed: int, count: int) -> list[ProductExample]:
     return out
 
 
-def _rows_from_training_csv(path: Path) -> list[ProductExample]:
-    if not path.exists() or not path.is_file():
-        raise AnalyticsError(ExitCode.INVALID_ARGS, f"Training CSV not found: {path}")
-
+def _rows_from_training_csv(
+    path: Path,
+    *,
+    training_format: str = "auto",
+    parquet_batch_size: int = 100000,
+) -> list[ProductExample]:
     class Agg:
         def __init__(self) -> None:
             self.notes: list[str] = []
@@ -322,52 +338,53 @@ def _rows_from_training_csv(path: Path) -> list[ProductExample]:
 
     by_sku: dict[str, Agg] = {}
 
-    with path.open("r", encoding="utf-8", newline="") as f:
-        reader = csv.DictReader(f)
-        if reader.fieldnames is None:
-            raise AnalyticsError(ExitCode.INVALID_ARGS, "Training CSV has no header")
-        for row in reader:
-            sku = str(row.get("sku") or "").strip().upper()
-            if not sku:
-                continue
-            agg = by_sku.setdefault(sku, Agg())
-            agg.total_rows += 1
-            label = str(row.get("type") or "").strip().upper()
-            if label:
-                agg.label_counts[label] += 1
-            note = str(row.get("notes") or row.get("memo") or "").strip()
-            if note:
-                agg.notes.append(note)
-            doc_type = str(row.get("doc_type") or "").strip().upper()
-            if doc_type:
-                agg.doc_types[doc_type] += 1
-            party = str(row.get("party") or "").strip().upper()
-            if party:
-                agg.parties.add(party)
-            qty = abs(_parse_decimal(row.get("qty")))
-            price = abs(_parse_decimal(row.get("price")))
-            cost = abs(_parse_decimal(row.get("cost")))
-            tax_rate = abs(_parse_decimal(row.get("tax_rate")))
-            if qty > 0:
-                agg.qty.append(qty)
-            if price > 0:
-                agg.price.append(price)
-            if cost > 0:
-                agg.cost.append(cost)
-            agg.tax_rate.append(tax_rate)
-            if tax_rate > 0:
-                agg.taxable_rows += 1
+    for row in iter_rows_from_file(
+        path,
+        requested_format=training_format,
+        parquet_columns=PRODUCT_TRAINING_COLUMNS,
+        parquet_batch_size=parquet_batch_size,
+    ):
+        sku = str(row.get("sku") or "").strip().upper()
+        if not sku:
+            continue
+        agg = by_sku.setdefault(sku, Agg())
+        agg.total_rows += 1
+        label = str(row.get("type") or "").strip().upper()
+        if label:
+            agg.label_counts[label] += 1
+        note = str(row.get("notes") or row.get("memo") or "").strip()
+        if note:
+            agg.notes.append(note)
+        doc_type = str(row.get("doc_type") or "").strip().upper()
+        if doc_type:
+            agg.doc_types[doc_type] += 1
+        party = str(row.get("party") or "").strip().upper()
+        if party:
+            agg.parties.add(party)
+        qty = abs(_parse_decimal(row.get("qty")))
+        price = abs(_parse_decimal(row.get("price")))
+        cost = abs(_parse_decimal(row.get("cost")))
+        tax_rate = abs(_parse_decimal(row.get("tax_rate")))
+        if qty > 0:
+            agg.qty.append(qty)
+        if price > 0:
+            agg.price.append(price)
+        if cost > 0:
+            agg.cost.append(cost)
+        agg.tax_rate.append(tax_rate)
+        if tax_rate > 0:
+            agg.taxable_rows += 1
 
-            entries = td_v2._parse_journal_lines(row.get("journal_lines"))
-            for account, direction, _amt in entries:
-                acc = _normalized_account(account)
-                if not acc:
-                    continue
-                agg.all_counts[acc] += 1
-                if direction == "D":
-                    agg.debit_counts[acc] += 1
-                elif direction == "C":
-                    agg.credit_counts[acc] += 1
+        entries = td_v2._parse_journal_lines(row.get("journal_lines"))
+        for account, direction, _amt in entries:
+            acc = _normalized_account(account)
+            if not acc:
+                continue
+            agg.all_counts[acc] += 1
+            if direction == "D":
+                agg.debit_counts[acc] += 1
+            elif direction == "C":
+                agg.credit_counts[acc] += 1
 
     out: list[ProductExample] = []
     for sku, agg in sorted(by_sku.items()):
@@ -919,7 +936,13 @@ def _suggest(
 
 
 def _cmd_train(args: argparse.Namespace) -> int:
-    tx_rows = _rows_from_training_csv(Path(args.training_csv))
+    training_path = Path(args.training_csv)
+    training_format = detect_training_format(training_path, requested=args.training_format)
+    tx_rows = _rows_from_training_csv(
+        training_path,
+        training_format=training_format,
+        parquet_batch_size=args.parquet_batch_size,
+    )
     synth_rows = _augment_with_synthetic(seed=args.seed, count=args.synthetic_products)
 
     feedback_rows: list[ProductExample] = []
@@ -978,8 +1001,11 @@ def _cmd_train(args: argparse.Namespace) -> int:
 
     config = {
         "dataset": {
-            "training_csv": Path(args.training_csv).name,
-            "training_csv_sha256": sha256_file(Path(args.training_csv)),
+            "training_csv": training_path.name,
+            "training_csv_sha256": sha256_file(training_path),
+            "training_file": training_path.name,
+            "training_file_sha256": sha256_file(training_path),
+            "training_format": training_format,
             "synthetic_products": args.synthetic_products,
             "feedback_rows": len(feedback_rows),
         },
@@ -997,6 +1023,7 @@ def _cmd_train(args: argparse.Namespace) -> int:
             "device": device_info.to_manifest(),
             "holdout_ratio": args.holdout_ratio,
             "topk_eval": args.topk,
+            "parquet_batch_size": args.parquet_batch_size,
         },
     }
 
@@ -1060,7 +1087,9 @@ def _build_parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="command", required=True)
 
     t = sub.add_parser("train", help="Train product-account recommender bundle")
-    t.add_argument("--training-csv", required=True)
+    t.add_argument("--training-csv", required=True, help="Training input file (CSV or Parquet)")
+    t.add_argument("--training-format", choices=["auto", "csv", "parquet"], default="auto")
+    t.add_argument("--parquet-batch-size", type=int, default=100000)
     t.add_argument("--out", required=True, help="Model root directory")
     t.add_argument("--metrics-out", default=None)
     t.add_argument("--feedback-jsonl", default=None)

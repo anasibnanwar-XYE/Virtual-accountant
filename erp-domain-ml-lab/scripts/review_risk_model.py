@@ -26,6 +26,7 @@ from ledgerstudio_analytics.ml.nn_text_classifier import (
     train_mlp_text_classifier_from_features,
 )
 from ledgerstudio_analytics.ml.tokenize import join_fields
+from _row_source import detect_training_format, iter_rows_from_file
 
 MODEL_ID = "orchestrator_erp.review_risk_model.v1"
 BUNDLE_KIND = "review_risk_registry"
@@ -59,6 +60,25 @@ NUMERIC_FEATURES = [
     "has_suspense_like",
     "complexity_ratio",
 ]
+REVIEW_RISK_TRAINING_COLUMNS = (
+    "type",
+    "reference",
+    "date",
+    "qty",
+    "price",
+    "cost",
+    "tax_rate",
+    "party",
+    "notes",
+    "doc_type",
+    "doc_status",
+    "memo",
+    "payment_method",
+    "gst_treatment",
+    "gst_inclusive",
+    "currency",
+    "journal_lines",
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -133,164 +153,173 @@ def _inject_numeric_features(model: NNTextClassifier) -> NNTextClassifier:
     )
 
 
-def _rows_from_training_csv(path: Path, *, risk_threshold: float, seed: int) -> list[RiskExample]:
-    if not path.exists() or not path.is_file():
-        raise AnalyticsError(ExitCode.INVALID_ARGS, f"Training CSV not found: {path}")
-
+def _rows_from_training_csv(
+    path: Path,
+    *,
+    risk_threshold: float,
+    seed: int,
+    training_format: str = "auto",
+    parquet_batch_size: int = 100000,
+) -> list[RiskExample]:
     rows: list[RiskExample] = []
-    with path.open("r", encoding="utf-8", newline="") as f:
-        reader = csv.DictReader(f)
-        for idx, row in enumerate(reader):
-            typ = str(row.get("type") or "").strip().upper()
-            ref = str(row.get("reference") or f"ROW-{idx:09d}").strip().upper()
-            doc_type = str(row.get("doc_type") or "").strip().upper()
-            doc_status = str(row.get("doc_status") or "").strip().upper()
-            pay_method = str(row.get("payment_method") or "").strip().upper()
-            gst_treatment = str(row.get("gst_treatment") or "").strip().upper()
-            gst_inclusive_raw = str(row.get("gst_inclusive") or "").strip().lower()
-            party = str(row.get("party") or "").strip().upper()
-            notes = str(row.get("notes") or "").strip()
-            memo = str(row.get("memo") or "").strip()
-            currency = str(row.get("currency") or "INR").strip().upper()
+    for idx, row in enumerate(
+        iter_rows_from_file(
+            path,
+            requested_format=training_format,
+            parquet_columns=REVIEW_RISK_TRAINING_COLUMNS,
+            parquet_batch_size=parquet_batch_size,
+        )
+    ):
+        typ = str(row.get("type") or "").strip().upper()
+        ref = str(row.get("reference") or f"ROW-{idx:09d}").strip().upper()
+        doc_type = str(row.get("doc_type") or "").strip().upper()
+        doc_status = str(row.get("doc_status") or "").strip().upper()
+        pay_method = str(row.get("payment_method") or "").strip().upper()
+        gst_treatment = str(row.get("gst_treatment") or "").strip().upper()
+        gst_inclusive_raw = str(row.get("gst_inclusive") or "").strip().lower()
+        party = str(row.get("party") or "").strip().upper()
+        notes = str(row.get("notes") or "").strip()
+        memo = str(row.get("memo") or "").strip()
+        currency = str(row.get("currency") or "INR").strip().upper()
 
-            qty = _parse_decimal(row.get("qty"))
-            qty_abs = abs(qty)
-            price_abs = abs(_parse_decimal(row.get("price")))
-            cost_abs = abs(_parse_decimal(row.get("cost")))
-            tax_rate = abs(_parse_decimal(row.get("tax_rate")))
-            amount_proxy = max(price_abs * max(qty_abs, 1.0), cost_abs * max(qty_abs, 1.0), price_abs, cost_abs)
+        qty = _parse_decimal(row.get("qty"))
+        qty_abs = abs(qty)
+        price_abs = abs(_parse_decimal(row.get("price")))
+        cost_abs = abs(_parse_decimal(row.get("cost")))
+        tax_rate = abs(_parse_decimal(row.get("tax_rate")))
+        amount_proxy = max(price_abs * max(qty_abs, 1.0), cost_abs * max(qty_abs, 1.0), price_abs, cost_abs)
 
-            journal_entries = td_v2._parse_journal_lines(row.get("journal_lines"))
-            accounts: list[str] = []
-            debit_count = 0
-            credit_count = 0
-            for acc, direction, _amt in journal_entries:
-                acc_norm = str(acc or "").strip().upper()
-                if not acc_norm:
-                    continue
-                accounts.append(acc_norm)
-                if direction == "D":
-                    debit_count += 1
-                elif direction == "C":
-                    credit_count += 1
+        journal_entries = td_v2._parse_journal_lines(row.get("journal_lines"))
+        accounts: list[str] = []
+        debit_count = 0
+        credit_count = 0
+        for acc, direction, _amt in journal_entries:
+            acc_norm = str(acc or "").strip().upper()
+            if not acc_norm:
+                continue
+            accounts.append(acc_norm)
+            if direction == "D":
+                debit_count += 1
+            elif direction == "C":
+                credit_count += 1
 
-            journal_line_count = len(accounts)
-            account_diversity = len(set(accounts))
-            has_tax_account = 1.0 if any(("GST" in a or "TAX" in a or "TDS" in a) for a in accounts) else 0.0
-            has_discount_account = 1.0 if any("DISCOUNT" in a for a in accounts) else 0.0
-            has_round_account = 1.0 if any(("ROUND" in a or "RND" in a) for a in accounts) else 0.0
-            has_inventory_account = 1.0 if any("INVENTORY" in a for a in accounts) else 0.0
-            has_suspense_like = 1.0 if any(("SUSPENSE" in a or "CLEARING" in a or "UNMAPPED" in a) for a in accounts) else 0.0
+        journal_line_count = len(accounts)
+        account_diversity = len(set(accounts))
+        has_tax_account = 1.0 if any(("GST" in a or "TAX" in a or "TDS" in a) for a in accounts) else 0.0
+        has_discount_account = 1.0 if any("DISCOUNT" in a for a in accounts) else 0.0
+        has_round_account = 1.0 if any(("ROUND" in a or "RND" in a) for a in accounts) else 0.0
+        has_inventory_account = 1.0 if any("INVENTORY" in a for a in accounts) else 0.0
+        has_suspense_like = 1.0 if any(("SUSPENSE" in a or "CLEARING" in a or "UNMAPPED" in a) for a in accounts) else 0.0
 
-            is_posted = 1.0 if doc_status == "POSTED" else 0.0
-            is_cancelled = 1.0 if ("CANCEL" in doc_status or "VOID" in doc_status) else 0.0
-            is_taxable = 1.0 if (gst_treatment == "TAXABLE" or tax_rate > 0) else 0.0
-            is_gst_inclusive = 1.0 if gst_inclusive_raw in {"true", "1", "yes", "y"} else 0.0
-            is_payment = 1.0 if typ in {"PAYMENT", "RECEIPT", "SETTLEMENT"} else 0.0
-            is_sale = 1.0 if ("SALE" in typ or "INVOICE" in typ) else 0.0
-            is_purchase = 1.0 if ("PURCHASE" in typ or typ == "GRN") else 0.0
-            is_write_off = 1.0 if typ in {"WRITE_OFF", "INVENTORY_ADJUSTMENT"} else 0.0
-            is_period_lock = 1.0 if typ == "PERIOD_LOCK" else 0.0
-            is_return_like = 1.0 if ("RETURN" in typ or "CREDIT_NOTE" in typ or "DEBIT_NOTE" in typ) else 0.0
-            payment_cash = 1.0 if pay_method in {"CASH", "PETTY_CASH"} else 0.0
+        is_posted = 1.0 if doc_status == "POSTED" else 0.0
+        is_cancelled = 1.0 if ("CANCEL" in doc_status or "VOID" in doc_status) else 0.0
+        is_taxable = 1.0 if (gst_treatment == "TAXABLE" or tax_rate > 0) else 0.0
+        is_gst_inclusive = 1.0 if gst_inclusive_raw in {"true", "1", "yes", "y"} else 0.0
+        is_payment = 1.0 if typ in {"PAYMENT", "RECEIPT", "SETTLEMENT"} else 0.0
+        is_sale = 1.0 if ("SALE" in typ or "INVOICE" in typ) else 0.0
+        is_purchase = 1.0 if ("PURCHASE" in typ or typ == "GRN") else 0.0
+        is_write_off = 1.0 if typ in {"WRITE_OFF", "INVENTORY_ADJUSTMENT"} else 0.0
+        is_period_lock = 1.0 if typ == "PERIOD_LOCK" else 0.0
+        is_return_like = 1.0 if ("RETURN" in typ or "CREDIT_NOTE" in typ or "DEBIT_NOTE" in typ) else 0.0
+        payment_cash = 1.0 if pay_method in {"CASH", "PETTY_CASH"} else 0.0
 
-            complexity_ratio = _safe_ratio(float(journal_line_count), 2.0)
+        complexity_ratio = _safe_ratio(float(journal_line_count), 2.0)
 
-            # Synthetic-first pseudo-labeling: conservative review assignment on risky patterns.
-            risk_logit = -0.6
-            if is_period_lock > 0:
-                risk_logit += 1.7
-            if is_write_off > 0:
-                risk_logit += 1.0
-            if journal_line_count >= 4:
-                risk_logit += 0.55
-            if journal_line_count >= 6:
-                risk_logit += 0.30
-            if has_suspense_like > 0:
-                risk_logit += 0.70
-            if is_taxable > 0 and tax_rate <= 0:
-                risk_logit += 1.15
-            if tax_rate > 0 and has_tax_account <= 0:
-                risk_logit += 1.10
-            if payment_cash > 0 and amount_proxy >= 50000:
-                risk_logit += 0.75
-            if qty < 0 and is_return_like <= 0 and is_write_off <= 0:
-                risk_logit += 0.85
-            if is_posted <= 0:
-                risk_logit += 0.45
-            if is_cancelled > 0:
-                risk_logit += 0.35
-            if has_discount_account > 0 and has_round_account > 0:
-                risk_logit += 0.25
-            if amount_proxy >= 250000:
-                risk_logit += 0.30
-            if amount_proxy >= 1000000:
-                risk_logit += 0.30
+        # Synthetic-first pseudo-labeling: conservative review assignment on risky patterns.
+        risk_logit = -0.6
+        if is_period_lock > 0:
+            risk_logit += 1.7
+        if is_write_off > 0:
+            risk_logit += 1.0
+        if journal_line_count >= 4:
+            risk_logit += 0.55
+        if journal_line_count >= 6:
+            risk_logit += 0.30
+        if has_suspense_like > 0:
+            risk_logit += 0.70
+        if is_taxable > 0 and tax_rate <= 0:
+            risk_logit += 1.15
+        if tax_rate > 0 and has_tax_account <= 0:
+            risk_logit += 1.10
+        if payment_cash > 0 and amount_proxy >= 50000:
+            risk_logit += 0.75
+        if qty < 0 and is_return_like <= 0 and is_write_off <= 0:
+            risk_logit += 0.85
+        if is_posted <= 0:
+            risk_logit += 0.45
+        if is_cancelled > 0:
+            risk_logit += 0.35
+        if has_discount_account > 0 and has_round_account > 0:
+            risk_logit += 0.25
+        if amount_proxy >= 250000:
+            risk_logit += 0.30
+        if amount_proxy >= 1000000:
+            risk_logit += 0.30
 
-            if is_posted > 0 and has_tax_account > 0 and journal_line_count <= 3 and is_period_lock <= 0:
-                risk_logit -= 0.25
-            if is_payment > 0 and pay_method in {"NEFT", "RTGS", "IMPS", "BANK_TRANSFER"}:
-                risk_logit -= 0.20
+        if is_posted > 0 and has_tax_account > 0 and journal_line_count <= 3 and is_period_lock <= 0:
+            risk_logit -= 0.25
+        if is_payment > 0 and pay_method in {"NEFT", "RTGS", "IMPS", "BANK_TRANSFER"}:
+            risk_logit -= 0.20
 
-            noise = (_hash_noise(ref, seed=seed) - 0.5) * 0.12
-            risk_prob = _sigmoid(risk_logit + noise)
-            label = LABEL_REVIEW if risk_prob >= risk_threshold else LABEL_LOW
+        noise = (_hash_noise(ref, seed=seed) - 0.5) * 0.12
+        risk_prob = _sigmoid(risk_logit + noise)
+        label = LABEL_REVIEW if risk_prob >= risk_threshold else LABEL_LOW
 
-            numeric = {
-                "qty_abs": float(qty_abs),
-                "price_abs": float(price_abs),
-                "cost_abs": float(cost_abs),
-                "amount_proxy": float(amount_proxy),
-                "tax_rate": float(tax_rate),
-                "journal_line_count": float(journal_line_count),
-                "journal_debit_count": float(debit_count),
-                "journal_credit_count": float(credit_count),
-                "account_diversity": float(account_diversity),
-                "is_posted": float(is_posted),
-                "is_cancelled": float(is_cancelled),
-                "is_taxable": float(is_taxable),
-                "is_gst_inclusive": float(is_gst_inclusive),
-                "is_payment": float(is_payment),
-                "is_sale": float(is_sale),
-                "is_purchase": float(is_purchase),
-                "is_write_off": float(is_write_off),
-                "is_period_lock": float(is_period_lock),
-                "is_return_like": float(is_return_like),
-                "payment_cash": float(payment_cash),
-                "has_discount_account": float(has_discount_account),
-                "has_round_account": float(has_round_account),
-                "has_tax_account": float(has_tax_account),
-                "has_inventory_account": float(has_inventory_account),
-                "has_suspense_like": float(has_suspense_like),
-                "complexity_ratio": float(complexity_ratio),
-            }
+        numeric = {
+            "qty_abs": float(qty_abs),
+            "price_abs": float(price_abs),
+            "cost_abs": float(cost_abs),
+            "amount_proxy": float(amount_proxy),
+            "tax_rate": float(tax_rate),
+            "journal_line_count": float(journal_line_count),
+            "journal_debit_count": float(debit_count),
+            "journal_credit_count": float(credit_count),
+            "account_diversity": float(account_diversity),
+            "is_posted": float(is_posted),
+            "is_cancelled": float(is_cancelled),
+            "is_taxable": float(is_taxable),
+            "is_gst_inclusive": float(is_gst_inclusive),
+            "is_payment": float(is_payment),
+            "is_sale": float(is_sale),
+            "is_purchase": float(is_purchase),
+            "is_write_off": float(is_write_off),
+            "is_period_lock": float(is_period_lock),
+            "is_return_like": float(is_return_like),
+            "payment_cash": float(payment_cash),
+            "has_discount_account": float(has_discount_account),
+            "has_round_account": float(has_round_account),
+            "has_tax_account": float(has_tax_account),
+            "has_inventory_account": float(has_inventory_account),
+            "has_suspense_like": float(has_suspense_like),
+            "complexity_ratio": float(complexity_ratio),
+        }
 
-            account_tokens = " ".join(sorted(set(accounts))[:8])
-            text = join_fields(
-                typ,
-                doc_type,
-                doc_status,
-                pay_method,
-                gst_treatment,
-                currency,
-                party,
-                notes,
-                memo,
-                account_tokens,
-            )
+        account_tokens = " ".join(sorted(set(accounts))[:8])
+        text = join_fields(
+            typ,
+            doc_type,
+            doc_status,
+            pay_method,
+            gst_treatment,
+            currency,
+            party,
+            notes,
+            memo,
+            account_tokens,
+        )
 
-            meta = {
-                "reference": ref,
-                "type": typ,
-                "doc_type": doc_type,
-                "doc_status": doc_status,
-                "payment_method": pay_method,
-                "gst_treatment": gst_treatment,
-                "risk_prob_seeded": _canon_score(risk_prob),
-            }
+        meta = {
+            "reference": ref,
+            "type": typ,
+            "doc_type": doc_type,
+            "doc_status": doc_status,
+            "payment_method": pay_method,
+            "gst_treatment": gst_treatment,
+            "risk_prob_seeded": _canon_score(risk_prob),
+        }
 
-            example_id = _stable_id({"reference": ref, "type": typ, "date": str(row.get("date") or ""), "i": idx})
-            rows.append(RiskExample(example_id=example_id, text=text, numeric=numeric, label=label, meta=meta))
+        example_id = _stable_id({"reference": ref, "type": typ, "date": str(row.get("date") or ""), "i": idx})
+        rows.append(RiskExample(example_id=example_id, text=text, numeric=numeric, label=label, meta=meta))
 
     if not rows:
         raise AnalyticsError(ExitCode.INVALID_ARGS, "No rows available for risk model training")
@@ -732,7 +761,15 @@ def _rows_from_override_memory(path: Path, *, risk_threshold: float, seed: int) 
 
 
 def _cmd_train(args: argparse.Namespace) -> int:
-    base_rows = _rows_from_training_csv(Path(args.training_csv), risk_threshold=args.risk_threshold, seed=args.seed)
+    training_path = Path(args.training_csv)
+    training_format = detect_training_format(training_path, requested=args.training_format)
+    base_rows = _rows_from_training_csv(
+        training_path,
+        risk_threshold=args.risk_threshold,
+        seed=args.seed,
+        training_format=training_format,
+        parquet_batch_size=args.parquet_batch_size,
+    )
     override_rows: list[RiskExample] = []
     if args.override_memory_jsonl:
         override_rows = _rows_from_override_memory(
@@ -790,8 +827,11 @@ def _cmd_train(args: argparse.Namespace) -> int:
 
     config = {
         "dataset": {
-            "training_csv": Path(args.training_csv).name,
-            "training_csv_sha256": sha256_file(Path(args.training_csv)),
+            "training_csv": training_path.name,
+            "training_csv_sha256": sha256_file(training_path),
+            "training_file": training_path.name,
+            "training_file_sha256": sha256_file(training_path),
+            "training_format": training_format,
             "risk_threshold": float(args.risk_threshold),
             "override_memory_jsonl": Path(args.override_memory_jsonl).as_posix() if args.override_memory_jsonl else None,
             "override_memory_sha256": sha256_file(Path(args.override_memory_jsonl)) if args.override_memory_jsonl else None,
@@ -810,6 +850,7 @@ def _cmd_train(args: argparse.Namespace) -> int:
             "max_hash_cache": args.max_hash_cache,
             "device": device_info.to_manifest(),
             "holdout_ratio": args.holdout_ratio,
+            "parquet_batch_size": args.parquet_batch_size,
         },
     }
 
@@ -896,7 +937,9 @@ def _build_parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="command", required=True)
 
     t = sub.add_parser("train", help="Train review-risk model")
-    t.add_argument("--training-csv", required=True)
+    t.add_argument("--training-csv", required=True, help="Training input file (CSV or Parquet)")
+    t.add_argument("--training-format", choices=["auto", "csv", "parquet"], default="auto")
+    t.add_argument("--parquet-batch-size", type=int, default=100000)
     t.add_argument("--out", required=True, help="Model root directory")
     t.add_argument("--metrics-out", default=None)
     t.add_argument("--override-memory-jsonl", default=None)

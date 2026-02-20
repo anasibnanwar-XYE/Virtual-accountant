@@ -1,0 +1,4 @@
+actor_user_id,company_code,workflow_family,record_referenceNumber,suggested_label,chosen_label,suggested_debit_account_code,approved_debit_account_code,suggested_credit_account_code,approved_credit_account_code,reason_code,reason_text,action
+accountant.a,BBP,sale,SO-900001,SALE,SALE,AR,AR,SALES,SALES,CONSISTENT_SALE_MAPPING,Prefers AR to SALES mapping for local dealer invoices,ACCEPTED
+accountant.a,BBP,payment,RCPT-900001,PAYMENT,PAYMENT,CASH,CASH,AR,AR,CONSISTENT_RECEIPT_MAPPING,Receipt should settle AR via CASH for this workflow,ACCEPTED
+accountant.a,BBP,period_lock,LOCK-2025-04,SALE,PERIOD_LOCK,,,,,PERIOD_LOCK_GUARD,Period lock rows should not be treated as sale,OVERRIDDEN

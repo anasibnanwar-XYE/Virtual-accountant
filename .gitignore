@@ -1,0 +1,13 @@
+# Local/runtime heavy artifacts
+**/.venv/
+**/cache/
+**/snapshots/
+**/locks/
+**/outputs/
+
+# Keep only curated learning artifacts committed under artifacts/
+!erp-domain-ml-lab/artifacts/**
+
+# Python noise
+**/__pycache__/
+*.pyc

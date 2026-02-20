@@ -1,0 +1,21 @@
+{
+  "checks": [
+    {
+      "name": "default_apply",
+      "report": "/home/realnigga/erp-domain-ml-lab/outputs/personalization_guardrail_smoke_20260220_194227/default_report.json",
+      "status": "ok"
+    },
+    {
+      "name": "low_memory_skip",
+      "report": "/home/realnigga/erp-domain-ml-lab/outputs/personalization_guardrail_smoke_20260220_194227/lowmem_report.json",
+      "status": "low_user_memory_skip"
+    },
+    {
+      "name": "stress_guardrail_revert",
+      "report": "/home/realnigga/erp-domain-ml-lab/outputs/personalization_guardrail_smoke_20260220_194227/stress_report.json",
+      "status": "guardrail_reverted_to_base"
+    }
+  ],
+  "schema_version": "v0",
+  "status": "ok"
+}

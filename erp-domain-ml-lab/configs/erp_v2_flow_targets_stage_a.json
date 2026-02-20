@@ -1,0 +1,17 @@
+{
+  "schema_version": "v0",
+  "profile_name": "erp_v2_stage_a_quality_first",
+  "description": "Conservative ERP-v2 family rebalance to improve quality before aggressive flow expansion.",
+  "default_weight": 0.02,
+  "families": {
+    "o2c": 0.08,
+    "p2p": 0.24,
+    "inventory_production": 0.18,
+    "banking_settlement": 0.16,
+    "tax_settlement": 0.18,
+    "payroll": 0.08,
+    "returns_reversal": 0.06,
+    "period_close": 0.015,
+    "approvals_override": 0.005
+  }
+}

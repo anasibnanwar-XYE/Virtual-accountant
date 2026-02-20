@@ -1,0 +1,66 @@
+{
+  "challenger_bundle": "/home/realnigga/erp-domain-ml-lab/models/reconciliation_exception_registry/orchestrator_erp.reconciliation_exception_model.v1/962af3fbd037ee0004e62074e5be97deb42241802c7ec47622832e6bb252d1fb",
+  "challenger_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/reconciliation_exception_training_metrics_20260220_225455.json",
+  "fingerprint_state_file": "/home/realnigga/erp-domain-ml-lab/outputs/current_reconciliation_training_fingerprint.json",
+  "gate_decision": {
+    "challenger_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/reconciliation_exception_training_metrics_20260220_225455.json",
+    "champion_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/reconciliation_exception_training_metrics_20260220_191751.json",
+    "guardrails": {
+      "max_fnr_increase": 0.02,
+      "max_predicted_positive_rate_drop": 0.08,
+      "max_predicted_positive_rate_increase": 0.08,
+      "max_recall_drop": 0.02,
+      "min_accuracy": 0.65,
+      "min_f1_delta": -0.01,
+      "min_precision": 0.55
+    },
+    "promote": false,
+    "schema_version": "v0",
+    "scores": {
+      "challenger_holdout": {
+        "accuracy": 0.99,
+        "examples": 1200.0,
+        "f1": 0.968912,
+        "fnr": 0.055556,
+        "fpr": 0.000998,
+        "positive_rate": 0.165,
+        "precision": 0.994681,
+        "predicted_positive_rate": 0.156667,
+        "recall": 0.944444
+      },
+      "champion_holdout": {
+        "accuracy": 0.995,
+        "examples": 400.0,
+        "f1": 0.987952,
+        "fnr": 0.012048,
+        "fpr": 0.003155,
+        "positive_rate": 0.2075,
+        "precision": 0.987952,
+        "predicted_positive_rate": 0.2075,
+        "recall": 0.987952
+      },
+      "deltas": {
+        "accuracy_delta": -0.0050000000000000044,
+        "f1_delta": -0.019040000000000057,
+        "fnr_delta": 0.043508000000000005,
+        "positive_rate_delta": -0.04249999999999998,
+        "precision_delta": 0.006728999999999985,
+        "predicted_positive_rate_delta": -0.05083299999999999,
+        "recall_delta": -0.0435080000000001
+      }
+    },
+    "violations": [
+      "recall_drop:-0.043508 < -0.020000",
+      "f1_drop:-0.019040 < -0.010000",
+      "fnr_increase:0.043508 > 0.020000"
+    ]
+  },
+  "override_memory_jsonl": "/home/realnigga/erp-domain-ml-lab/data/labels/override_reason_feedback_memory.jsonl",
+  "previous_champion_bundle": "/home/realnigga/erp-domain-ml-lab/models/reconciliation_exception_registry/orchestrator_erp.reconciliation_exception_model.v1/bd5adf5e041de8af25899230cee9d4de4c72eed829c94ce0ae60d975448a2df8",
+  "previous_champion_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/reconciliation_exception_training_metrics_20260220_191751.json",
+  "schema_version": "v0",
+  "status": "rejected",
+  "training_csv": "/home/realnigga/erp-domain-ml-lab/data/training/orchestrator_training_rebalanced_6000_20260220_185823.csv",
+  "training_fingerprint": "c2832942841299e8aaf39f076ceeb8a13a6efdd53c3bbdc998eb2845f96986a5",
+  "training_skipped": false
+}

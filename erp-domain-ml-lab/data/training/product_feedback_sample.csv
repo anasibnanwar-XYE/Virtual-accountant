@@ -1,0 +1,3 @@
+sku,product_name,product_kind,category,uom,gst_rate,base_price,avg_cost,revenue_account_code,cogs_account_code,inventory_account_code,tax_account_code,discount_account_code
+FG-DEC-900001,Decorative Interior Premium,FINISHED_GOOD,DECORATIVE_INTERIOR,L,18,1450,990,SALES,COGS,INVENTORY,GST_OUTPUT,DISCOUNT_ALLOWED
+RM-SOL-900002,Industrial Solvent A,RAW_MATERIAL,SOLVENTS,KG,18,420,310,SALES,FREIGHT_IN,INVENTORY,GST_INPUT,DISCOUNT_RECEIVED

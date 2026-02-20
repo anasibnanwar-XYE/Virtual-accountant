@@ -1,0 +1,63 @@
+{
+  "challenger_bundle": "/home/realnigga/erp-domain-ml-lab/models/product_account_registry/orchestrator_erp.product_account_recommender.v1/0c57d8106fe4e0639a7eec74f281381c87f29d408b22f30d333d89430e236262",
+  "challenger_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/product_account_training_metrics_20260220_224259.json",
+  "feedback_memory": "/home/realnigga/erp-domain-ml-lab/data/labels/product_account_feedback_memory.jsonl",
+  "fingerprint_state_file": "/home/realnigga/erp-domain-ml-lab/outputs/current_product_account_training_fingerprint.json",
+  "gate_decision": {
+    "challenger_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/product_account_training_metrics_20260220_224259.json",
+    "champion_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/product_account_training_metrics_20260219_195728.json",
+    "guardrails": {
+      "max_degrade_core": 0.005,
+      "max_degrade_discount": 0.02,
+      "min_overall_delta": -0.001
+    },
+    "overall": {
+      "challenger_mean_holdout_top1": 0.9237778000000001,
+      "champion_mean_holdout_top1": 0.96864,
+      "delta": -0.04486219999999985
+    },
+    "per_target": {
+      "cogs": {
+        "challenger_holdout_top1": 0.855556,
+        "champion_holdout_top1": 0.9632,
+        "delta": -0.10764399999999996
+      },
+      "discount": {
+        "challenger_holdout_top1": 0.836667,
+        "champion_holdout_top1": 0.9076,
+        "delta": -0.07093299999999991
+      },
+      "inventory": {
+        "challenger_holdout_top1": 0.978889,
+        "champion_holdout_top1": 0.9824,
+        "delta": -0.003511000000000042
+      },
+      "revenue": {
+        "challenger_holdout_top1": 0.993333,
+        "champion_holdout_top1": 1.0,
+        "delta": -0.0066669999999999785
+      },
+      "tax": {
+        "challenger_holdout_top1": 0.954444,
+        "champion_holdout_top1": 0.99,
+        "delta": -0.03555600000000003
+      }
+    },
+    "promote": false,
+    "schema_version": "v0",
+    "violations": [
+      "core_target_drop:revenue:-0.006667 < -0.005000",
+      "core_target_drop:cogs:-0.107644 < -0.005000",
+      "core_target_drop:tax:-0.035556 < -0.005000",
+      "discount_drop:discount:-0.070933 < -0.020000",
+      "overall_drop:-0.044862 < -0.001000"
+    ]
+  },
+  "previous_champion_bundle": "/home/realnigga/erp-domain-ml-lab/models/product_account_registry/orchestrator_erp.product_account_recommender.v1/bf21a82c87a043c3261848e8f6c8048bd13d5b7f46aa04a37f0570d83f2b28aa",
+  "previous_champion_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/product_account_training_metrics_20260219_195728.json",
+  "schema_version": "v0",
+  "status": "rejected",
+  "training_csv": "/home/realnigga/erp-domain-ml-lab/data/training/orchestrator_training_rebalanced_6000_20260220_185823.csv",
+  "training_fingerprint": "f84aba77709ab59045c00cece9e8e7125229f8383a7e8ea83a09003c1392f0d2",
+  "training_skipped": false
+}

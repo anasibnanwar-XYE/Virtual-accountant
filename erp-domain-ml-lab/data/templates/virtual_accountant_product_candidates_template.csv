@@ -1,0 +1,4 @@
+sku,product_name,category,product_kind,uom,gst_rate,base_price,avg_cost
+FG-DEC-NEW001,Premium Interior Acrylic,DECORATIVE_INTERIOR,FINISHED_GOOD,L,0.18,925,510
+FG-PKG-NEW002,Retail Trial Pack,PACKAGING,FINISHED_GOOD,PCS,0.12,140,88
+RM-SOL-NEW003,Industrial Solvent Blend,SOLVENTS,RAW_MATERIAL,KG,0.18,310,220

@@ -1,0 +1,679 @@
+{
+  "coa": {
+    "by_family": {
+      "cogs": {
+        "credit_top1": 1.0,
+        "credit_top3": 1.0,
+        "debit_top1": 1.0,
+        "debit_top3": 1.0,
+        "examples": 64,
+        "policy_credit_top1_blocked_rate": 0.0,
+        "policy_credit_top1_discouraged_rate": 0.0,
+        "policy_debit_top1_blocked_rate": 0.0,
+        "policy_debit_top1_discouraged_rate": 0.0
+      },
+      "inventory_count": {
+        "credit_top1": 0.7058823529411765,
+        "credit_top3": 1.0,
+        "debit_top1": 0.9215686274509803,
+        "debit_top3": 1.0,
+        "examples": 51,
+        "policy_credit_top1_blocked_rate": 0.0,
+        "policy_credit_top1_discouraged_rate": 0.0,
+        "policy_debit_top1_blocked_rate": 0.0,
+        "policy_debit_top1_discouraged_rate": 0.0
+      },
+      "payment": {
+        "credit_top1": 1.0,
+        "credit_top3": 1.0,
+        "debit_top1": 0.8873239436619719,
+        "debit_top3": 0.9530516431924883,
+        "examples": 213,
+        "policy_credit_top1_blocked_rate": 0.0,
+        "policy_credit_top1_discouraged_rate": 0.0,
+        "policy_debit_top1_blocked_rate": 0.0,
+        "policy_debit_top1_discouraged_rate": 0.0
+      },
+      "purchase": {
+        "credit_top1": 1.0,
+        "credit_top3": 1.0,
+        "debit_top1": 0.0,
+        "debit_top3": 1.0,
+        "examples": 322,
+        "policy_credit_top1_blocked_rate": 0.0,
+        "policy_credit_top1_discouraged_rate": 0.0,
+        "policy_debit_top1_blocked_rate": 0.0,
+        "policy_debit_top1_discouraged_rate": 1.0
+      },
+      "sale": {
+        "credit_top1": 1.0,
+        "credit_top3": 1.0,
+        "debit_top1": 1.0,
+        "debit_top3": 1.0,
+        "examples": 476,
+        "policy_credit_top1_blocked_rate": 0.0,
+        "policy_credit_top1_discouraged_rate": 0.0,
+        "policy_debit_top1_blocked_rate": 0.0,
+        "policy_debit_top1_discouraged_rate": 0.0
+      },
+      "write_off": {
+        "credit_top1": 1.0,
+        "credit_top3": 1.0,
+        "debit_top1": 1.0,
+        "debit_top3": 1.0,
+        "examples": 36,
+        "policy_credit_top1_blocked_rate": 0.0,
+        "policy_credit_top1_discouraged_rate": 0.0,
+        "policy_debit_top1_blocked_rate": 0.0,
+        "policy_debit_top1_discouraged_rate": 0.0
+      }
+    },
+    "by_label": {
+      "COGS": {
+        "credit_top1": 1.0,
+        "credit_top3": 1.0,
+        "debit_top1": 1.0,
+        "debit_top3": 1.0,
+        "examples": 64
+      },
+      "INVENTORY_COUNT": {
+        "credit_top1": 0.7058823529411765,
+        "credit_top3": 1.0,
+        "debit_top1": 0.9215686274509803,
+        "debit_top3": 1.0,
+        "examples": 51
+      },
+      "PAYMENT": {
+        "credit_top1": 1.0,
+        "credit_top3": 1.0,
+        "debit_top1": 0.8873239436619719,
+        "debit_top3": 0.9530516431924883,
+        "examples": 213
+      },
+      "PURCHASE": {
+        "credit_top1": 1.0,
+        "credit_top3": 1.0,
+        "debit_top1": 0.0,
+        "debit_top3": 1.0,
+        "examples": 322
+      },
+      "SALE": {
+        "credit_top1": 1.0,
+        "credit_top3": 1.0,
+        "debit_top1": 1.0,
+        "debit_top3": 1.0,
+        "examples": 402
+      },
+      "SALE_RETURN": {
+        "credit_top1": 1.0,
+        "credit_top3": 1.0,
+        "debit_top1": 1.0,
+        "debit_top3": 1.0,
+        "examples": 74
+      },
+      "WRITE_OFF": {
+        "credit_top1": 1.0,
+        "credit_top3": 1.0,
+        "debit_top1": 1.0,
+        "debit_top3": 1.0,
+        "examples": 36
+      }
+    },
+    "credit_top1": 0.9870912220309811,
+    "credit_top3": 1.0,
+    "debit_top1": 0.6987951807228916,
+    "debit_top3": 0.9913941480206541,
+    "examples": 1162,
+    "policy_band_counts": {
+      "credit:allowed": 958,
+      "credit:discouraged": 618,
+      "credit:preferred": 1910,
+      "debit:allowed": 762,
+      "debit:discouraged": 665,
+      "debit:preferred": 2059
+    },
+    "policy_top1": {
+      "credit": {
+        "blocked_rate": 0.0,
+        "counts": {
+          "allowed": 0,
+          "blocked": 0,
+          "discouraged": 0,
+          "preferred": 1162
+        },
+        "discouraged_rate": 0.0
+      },
+      "debit": {
+        "blocked_rate": 0.0,
+        "counts": {
+          "allowed": 0,
+          "blocked": 0,
+          "discouraged": 322,
+          "preferred": 840
+        },
+        "discouraged_rate": 0.27710843373493976
+      },
+      "examples": 1162
+    }
+  },
+  "generated_at_utc": "2026-02-20T17:12:58.411849+00:00",
+  "inputs": {
+    "coa_jsonl": "/home/realnigga/erp-domain-ml-lab/outputs/tx_coa_eval_20260220_224257/coa_v1/advisory_outputs/coa_mapping_recommendations.jsonl",
+    "tx_eval_json": "/home/realnigga/erp-domain-ml-lab/outputs/tx_coa_eval_20260220_224257/transaction_v2/advisory_outputs/eval_snapshot_v2.json",
+    "tx_jsonl": "/home/realnigga/erp-domain-ml-lab/outputs/tx_coa_eval_20260220_224257/transaction_v2/advisory_outputs/transaction_classifications_v2.jsonl"
+  },
+  "schema_version": "v0",
+  "snapshot_dir": "/home/realnigga/erp-domain-ml-lab/snapshots/benchmark_tx_coa_snapshot",
+  "topk": 3,
+  "truth_records": 1200,
+  "tx": {
+    "accuracy": 0.9683333333333334,
+    "accuracy_ppm": 968333,
+    "by_family": {
+      "cogs": {
+        "accuracy": 1.0,
+        "examples": 64
+      },
+      "inventory_count": {
+        "accuracy": 1.0,
+        "examples": 51
+      },
+      "payment": {
+        "accuracy": 1.0,
+        "examples": 213
+      },
+      "period_lock": {
+        "accuracy": 0.0,
+        "examples": 38
+      },
+      "purchase": {
+        "accuracy": 1.0,
+        "examples": 322
+      },
+      "sale": {
+        "accuracy": 1.0,
+        "examples": 476
+      },
+      "write_off": {
+        "accuracy": 1.0,
+        "examples": 36
+      }
+    },
+    "by_label": {
+      "COGS": {
+        "accuracy": 1.0,
+        "examples": 64
+      },
+      "INVENTORY_COUNT": {
+        "accuracy": 1.0,
+        "examples": 51
+      },
+      "PAYMENT": {
+        "accuracy": 1.0,
+        "examples": 213
+      },
+      "PERIOD_LOCK": {
+        "accuracy": 0.0,
+        "examples": 38
+      },
+      "PURCHASE": {
+        "accuracy": 1.0,
+        "examples": 322
+      },
+      "SALE": {
+        "accuracy": 1.0,
+        "examples": 402
+      },
+      "SALE_RETURN": {
+        "accuracy": 1.0,
+        "examples": 74
+      },
+      "WRITE_OFF": {
+        "accuracy": 1.0,
+        "examples": 36
+      }
+    },
+    "confusion": {
+      "COGS": {
+        "COGS": 64
+      },
+      "INVENTORY_COUNT": {
+        "INVENTORY_COUNT": 51
+      },
+      "PAYMENT": {
+        "PAYMENT": 213
+      },
+      "PERIOD_LOCK": {
+        "PURCHASE": 38
+      },
+      "PURCHASE": {
+        "PURCHASE": 322
+      },
+      "SALE": {
+        "SALE": 402
+      },
+      "SALE_RETURN": {
+        "SALE_RETURN": 74
+      },
+      "WRITE_OFF": {
+        "WRITE_OFF": 36
+      }
+    },
+    "examples": 1200
+  },
+  "tx_eval_snapshot": {
+    "calibration": {
+      "bins": 10,
+      "calibration_id": "13ebd3edd6f00d494b24c90c7129b7bc97bc6dadbefa018ae317221913e7e7c8",
+      "calibration_sha256": "dc92354040e0d7704a3ee2c8c211a79ec02025416c91e1b669a828152b246449",
+      "ece": "0.009532",
+      "ece_ppm": 9532,
+      "histogram": [
+        {
+          "count": 0,
+          "range": "0.00-0.10"
+        },
+        {
+          "count": 0,
+          "range": "0.10-0.20"
+        },
+        {
+          "count": 22,
+          "range": "0.20-0.30"
+        },
+        {
+          "count": 0,
+          "range": "0.30-0.40"
+        },
+        {
+          "count": 0,
+          "range": "0.40-0.50"
+        },
+        {
+          "count": 0,
+          "range": "0.50-0.60"
+        },
+        {
+          "count": 0,
+          "range": "0.60-0.70"
+        },
+        {
+          "count": 0,
+          "range": "0.70-0.80"
+        },
+        {
+          "count": 0,
+          "range": "0.80-0.90"
+        },
+        {
+          "count": 578,
+          "range": "0.90-1.00"
+        }
+      ],
+      "reliability_curve": [
+        {
+          "accuracy_ppm": 0,
+          "avg_confidence": "0.000000",
+          "count": 0,
+          "range": "0.00-0.10"
+        },
+        {
+          "accuracy_ppm": 0,
+          "avg_confidence": "0.000000",
+          "count": 0,
+          "range": "0.10-0.20"
+        },
+        {
+          "accuracy_ppm": 0,
+          "avg_confidence": "0.258220",
+          "count": 22,
+          "range": "0.20-0.30"
+        },
+        {
+          "accuracy_ppm": 0,
+          "avg_confidence": "0.000000",
+          "count": 0,
+          "range": "0.30-0.40"
+        },
+        {
+          "accuracy_ppm": 0,
+          "avg_confidence": "0.000000",
+          "count": 0,
+          "range": "0.40-0.50"
+        },
+        {
+          "accuracy_ppm": 0,
+          "avg_confidence": "0.000000",
+          "count": 0,
+          "range": "0.50-0.60"
+        },
+        {
+          "accuracy_ppm": 0,
+          "avg_confidence": "0.000000",
+          "count": 0,
+          "range": "0.60-0.70"
+        },
+        {
+          "accuracy_ppm": 0,
+          "avg_confidence": "0.000000",
+          "count": 0,
+          "range": "0.70-0.80"
+        },
+        {
+          "accuracy_ppm": 0,
+          "avg_confidence": "0.000000",
+          "count": 0,
+          "range": "0.80-0.90"
+        },
+        {
+          "accuracy_ppm": 1000000,
+          "avg_confidence": "0.999934",
+          "count": 578,
+          "range": "0.90-1.00"
+        }
+      ],
+      "source": "stored",
+      "temperature": "0.400000"
+    },
+    "overall": {
+      "accuracy_ppm": 968333,
+      "confusion": {
+        "COGS": {
+          "COGS": 64
+        },
+        "INVENTORY_COUNT": {
+          "INVENTORY_COUNT": 51
+        },
+        "PAYMENT": {
+          "PAYMENT": 213
+        },
+        "PERIOD_LOCK": {
+          "PURCHASE": 38
+        },
+        "PURCHASE": {
+          "PURCHASE": 322
+        },
+        "SALE": {
+          "SALE": 402
+        },
+        "SALE_RETURN": {
+          "SALE_RETURN": 74
+        },
+        "WRITE_OFF": {
+          "WRITE_OFF": 36
+        }
+      },
+      "correct": 1162,
+      "examples": 1200
+    },
+    "threshold_stats": {
+      "0.800000": {
+        "auto_accept_accuracy_ppm": 1000000,
+        "auto_accept_error_rate_ppm": 0,
+        "auto_accept_rate_ppm": 951667,
+        "auto_accepted": 1142,
+        "by_true_label": {
+          "COGS": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 64,
+            "examples": 64,
+            "review": 0
+          },
+          "INVENTORY_COUNT": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 51,
+            "examples": 51,
+            "review": 0
+          },
+          "PAYMENT": {
+            "auto_accept_rate_ppm": 906103,
+            "auto_accepted": 193,
+            "examples": 213,
+            "review": 20
+          },
+          "PERIOD_LOCK": {
+            "auto_accept_rate_ppm": 0,
+            "auto_accepted": 0,
+            "examples": 38,
+            "review": 38
+          },
+          "PURCHASE": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 322,
+            "examples": 322,
+            "review": 0
+          },
+          "SALE": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 402,
+            "examples": 402,
+            "review": 0
+          },
+          "SALE_RETURN": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 74,
+            "examples": 74,
+            "review": 0
+          },
+          "WRITE_OFF": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 36,
+            "examples": 36,
+            "review": 0
+          }
+        },
+        "review": 58,
+        "review_rate_ppm": 48333
+      },
+      "0.900000": {
+        "auto_accept_accuracy_ppm": 1000000,
+        "auto_accept_error_rate_ppm": 0,
+        "auto_accept_rate_ppm": 940000,
+        "auto_accepted": 1128,
+        "by_true_label": {
+          "COGS": {
+            "auto_accept_rate_ppm": 984375,
+            "auto_accepted": 63,
+            "examples": 64,
+            "review": 1
+          },
+          "INVENTORY_COUNT": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 51,
+            "examples": 51,
+            "review": 0
+          },
+          "PAYMENT": {
+            "auto_accept_rate_ppm": 849765,
+            "auto_accepted": 181,
+            "examples": 213,
+            "review": 32
+          },
+          "PERIOD_LOCK": {
+            "auto_accept_rate_ppm": 0,
+            "auto_accepted": 0,
+            "examples": 38,
+            "review": 38
+          },
+          "PURCHASE": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 322,
+            "examples": 322,
+            "review": 0
+          },
+          "SALE": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 402,
+            "examples": 402,
+            "review": 0
+          },
+          "SALE_RETURN": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 74,
+            "examples": 74,
+            "review": 0
+          },
+          "WRITE_OFF": {
+            "auto_accept_rate_ppm": 972222,
+            "auto_accepted": 35,
+            "examples": 36,
+            "review": 1
+          }
+        },
+        "review": 72,
+        "review_rate_ppm": 60000
+      },
+      "0.950000": {
+        "auto_accept_accuracy_ppm": 1000000,
+        "auto_accept_error_rate_ppm": 0,
+        "auto_accept_rate_ppm": 783333,
+        "auto_accepted": 940,
+        "by_true_label": {
+          "COGS": {
+            "auto_accept_rate_ppm": 0,
+            "auto_accepted": 0,
+            "examples": 64,
+            "review": 64
+          },
+          "INVENTORY_COUNT": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 51,
+            "examples": 51,
+            "review": 0
+          },
+          "PAYMENT": {
+            "auto_accept_rate_ppm": 446009,
+            "auto_accepted": 95,
+            "examples": 213,
+            "review": 118
+          },
+          "PERIOD_LOCK": {
+            "auto_accept_rate_ppm": 0,
+            "auto_accepted": 0,
+            "examples": 38,
+            "review": 38
+          },
+          "PURCHASE": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 322,
+            "examples": 322,
+            "review": 0
+          },
+          "SALE": {
+            "auto_accept_rate_ppm": 990050,
+            "auto_accepted": 398,
+            "examples": 402,
+            "review": 4
+          },
+          "SALE_RETURN": {
+            "auto_accept_rate_ppm": 1000000,
+            "auto_accepted": 74,
+            "examples": 74,
+            "review": 0
+          },
+          "WRITE_OFF": {
+            "auto_accept_rate_ppm": 0,
+            "auto_accepted": 0,
+            "examples": 36,
+            "review": 36
+          }
+        },
+        "review": 260,
+        "review_rate_ppm": 216667
+      }
+    }
+  },
+  "workflow_families": {
+    "cogs": {
+      "coa_credit_top1": 1.0,
+      "coa_credit_top3": 1.0,
+      "coa_debit_top1": 1.0,
+      "coa_debit_top3": 1.0,
+      "coa_policy_credit_top1_blocked_rate": 0.0,
+      "coa_policy_credit_top1_discouraged_rate": 0.0,
+      "coa_policy_debit_top1_blocked_rate": 0.0,
+      "coa_policy_debit_top1_discouraged_rate": 0.0,
+      "examples_coa": 64,
+      "examples_tx": 64,
+      "tx_accuracy": 1.0
+    },
+    "inventory_count": {
+      "coa_credit_top1": 0.7058823529411765,
+      "coa_credit_top3": 1.0,
+      "coa_debit_top1": 0.9215686274509803,
+      "coa_debit_top3": 1.0,
+      "coa_policy_credit_top1_blocked_rate": 0.0,
+      "coa_policy_credit_top1_discouraged_rate": 0.0,
+      "coa_policy_debit_top1_blocked_rate": 0.0,
+      "coa_policy_debit_top1_discouraged_rate": 0.0,
+      "examples_coa": 51,
+      "examples_tx": 51,
+      "tx_accuracy": 1.0
+    },
+    "payment": {
+      "coa_credit_top1": 1.0,
+      "coa_credit_top3": 1.0,
+      "coa_debit_top1": 0.8873239436619719,
+      "coa_debit_top3": 0.9530516431924883,
+      "coa_policy_credit_top1_blocked_rate": 0.0,
+      "coa_policy_credit_top1_discouraged_rate": 0.0,
+      "coa_policy_debit_top1_blocked_rate": 0.0,
+      "coa_policy_debit_top1_discouraged_rate": 0.0,
+      "examples_coa": 213,
+      "examples_tx": 213,
+      "tx_accuracy": 1.0
+    },
+    "period_lock": {
+      "coa_credit_top1": 0.0,
+      "coa_credit_top3": 0.0,
+      "coa_debit_top1": 0.0,
+      "coa_debit_top3": 0.0,
+      "coa_policy_credit_top1_blocked_rate": 0.0,
+      "coa_policy_credit_top1_discouraged_rate": 0.0,
+      "coa_policy_debit_top1_blocked_rate": 0.0,
+      "coa_policy_debit_top1_discouraged_rate": 0.0,
+      "examples_coa": 0,
+      "examples_tx": 38,
+      "tx_accuracy": 0.0
+    },
+    "purchase": {
+      "coa_credit_top1": 1.0,
+      "coa_credit_top3": 1.0,
+      "coa_debit_top1": 0.0,
+      "coa_debit_top3": 1.0,
+      "coa_policy_credit_top1_blocked_rate": 0.0,
+      "coa_policy_credit_top1_discouraged_rate": 0.0,
+      "coa_policy_debit_top1_blocked_rate": 0.0,
+      "coa_policy_debit_top1_discouraged_rate": 1.0,
+      "examples_coa": 322,
+      "examples_tx": 322,
+      "tx_accuracy": 1.0
+    },
+    "sale": {
+      "coa_credit_top1": 1.0,
+      "coa_credit_top3": 1.0,
+      "coa_debit_top1": 1.0,
+      "coa_debit_top3": 1.0,
+      "coa_policy_credit_top1_blocked_rate": 0.0,
+      "coa_policy_credit_top1_discouraged_rate": 0.0,
+      "coa_policy_debit_top1_blocked_rate": 0.0,
+      "coa_policy_debit_top1_discouraged_rate": 0.0,
+      "examples_coa": 476,
+      "examples_tx": 476,
+      "tx_accuracy": 1.0
+    },
+    "write_off": {
+      "coa_credit_top1": 1.0,
+      "coa_credit_top3": 1.0,
+      "coa_debit_top1": 1.0,
+      "coa_debit_top3": 1.0,
+      "coa_policy_credit_top1_blocked_rate": 0.0,
+      "coa_policy_credit_top1_discouraged_rate": 0.0,
+      "coa_policy_debit_top1_blocked_rate": 0.0,
+      "coa_policy_debit_top1_discouraged_rate": 0.0,
+      "examples_coa": 36,
+      "examples_tx": 36,
+      "tx_accuracy": 1.0
+    }
+  }
+}

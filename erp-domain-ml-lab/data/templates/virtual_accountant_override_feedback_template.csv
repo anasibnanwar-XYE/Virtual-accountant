@@ -1,0 +1,3 @@
+reference,type,doc_type,doc_status,party,payment_method,gst_treatment,currency,suggested_label,approved_label,suggested_debit_account_code,suggested_credit_account_code,approved_debit_account_code,approved_credit_account_code,reason_code,reason_text,action,source
+SO-900001,SALE,INVOICE,POSTED,DEALER-001,BANK_TRANSFER,TAXABLE,INR,SALE,SALE,AR,SALES,AR,SALES,CONSISTENT_SALE_MAPPING,Sale postings validated by accountant,ACCEPTED,manual_review
+LOCK-2025-04,PERIOD_LOCK,ACCOUNTING_PERIOD_LOCK,LOCKED,SYSTEM,,,INR,SALE,PERIOD_LOCK,,,,,PERIOD_LOCK_GUARD,Period lock must not be treated as sale,OVERRIDDEN,manual_review

@@ -1,0 +1,127 @@
+{
+  "alerts": [
+    "tx_coa:rejected",
+    "product_account:rejected",
+    "review_risk:rejected",
+    "reconciliation:rejected"
+  ],
+  "generated_at_utc": "2026-02-20T17:28:27.770361+00:00",
+  "guardrail_smoke": {
+    "checks": [
+      {
+        "name": "default_apply",
+        "report": "/home/realnigga/erp-domain-ml-lab/outputs/personalization_guardrail_smoke_20260220_194227/default_report.json",
+        "status": "ok"
+      },
+      {
+        "name": "low_memory_skip",
+        "report": "/home/realnigga/erp-domain-ml-lab/outputs/personalization_guardrail_smoke_20260220_194227/lowmem_report.json",
+        "status": "low_user_memory_skip"
+      },
+      {
+        "name": "stress_guardrail_revert",
+        "report": "/home/realnigga/erp-domain-ml-lab/outputs/personalization_guardrail_smoke_20260220_194227/stress_report.json",
+        "status": "guardrail_reverted_to_base"
+      }
+    ],
+    "status": "ok"
+  },
+  "models": {
+    "personalization": {
+      "coa_credit_top1_change_rate": 0.0,
+      "coa_debit_top1_change_rate": 0.0,
+      "company_code": "BBP",
+      "memory_rows_user": 5,
+      "status": "ok",
+      "tx_top1_change_rate": 0.0,
+      "user_id": "accountant.a",
+      "violations": []
+    },
+    "product_account": {
+      "cycle_status": "rejected",
+      "holdout_top1": {
+        "cogs": 0.9632,
+        "discount": 0.9076,
+        "inventory": 0.9824,
+        "revenue": 1.0,
+        "tax": 0.99
+      },
+      "promote": false,
+      "training_skipped": false,
+      "violations": [
+        "core_target_drop:revenue:-0.006667 < -0.005000",
+        "core_target_drop:cogs:-0.107644 < -0.005000",
+        "core_target_drop:tax:-0.035556 < -0.005000",
+        "discount_drop:discount:-0.070933 < -0.020000",
+        "overall_drop:-0.044862 < -0.001000"
+      ]
+    },
+    "reconciliation": {
+      "cycle_status": "rejected",
+      "holdout_accuracy": 0.995,
+      "holdout_f1": 0.987952,
+      "holdout_precision": 0.987952,
+      "holdout_predicted_positive_rate": 0.2075,
+      "holdout_recall": 0.987952,
+      "promote": false,
+      "training_skipped": false,
+      "violations": [
+        "recall_drop:-0.043508 < -0.020000",
+        "f1_drop:-0.019040 < -0.010000",
+        "fnr_increase:0.043508 > 0.020000"
+      ]
+    },
+    "review_risk": {
+      "cycle_status": "rejected",
+      "holdout_accuracy": 0.989,
+      "holdout_f1": 0.951111,
+      "holdout_precision": 0.981651,
+      "holdout_predicted_positive_rate": 0.109,
+      "holdout_recall": 0.922414,
+      "promote": false,
+      "training_skipped": false,
+      "violations": [
+        "recall_drop:-0.044365 < -0.020000",
+        "f1_drop:-0.036825 < -0.010000",
+        "fnr_increase:0.044365 > 0.020000"
+      ]
+    },
+    "tx_coa": {
+      "coa_credit_top1": 0.9870912220309811,
+      "coa_credit_top3": 1.0,
+      "coa_debit_top1": 0.6987951807228916,
+      "coa_debit_top3": 0.9913941480206541,
+      "cycle_status": "rejected",
+      "gst_guardrail_profile": "stage1",
+      "gst_issue_rate": 0.6966666666666667,
+      "gst_major_fail_rate": 0.6624405705229794,
+      "gst_next_guardrail_profile": "stage1",
+      "promote": false,
+      "training_reused_existing_models": false,
+      "tx_accuracy": 0.9683333333333334,
+      "tx_accuracy_ppm": 968333,
+      "violations": [
+        "policy_discouraged_top1_rate:0.277108 > 0.250000",
+        "tx_drop_ppm:31667 > 2000",
+        "coa_top1_drop:0.145869 > 0.004000",
+        "overall_drop:-0.066888 < -0.001000",
+        "policy_discouraged_top1_rate_delta:0.277108 > 0.050000",
+        "gst_purchase_missing_delta:38 > 25"
+      ]
+    }
+  },
+  "overall_status": "attention_required",
+  "paths": {
+    "personalization_guardrail_smoke": "/home/realnigga/erp-domain-ml-lab/outputs/personalization_guardrail_smoke_20260220_194227/summary.json",
+    "personalization_report": "/home/realnigga/erp-domain-ml-lab/outputs/user_personalization/accountant.a_/run_20260220_225732/personalization_report.json",
+    "product_cycle_summary": "/home/realnigga/erp-domain-ml-lab/outputs/continual_learning/product_account/cycle_20260220_224259/cycle_summary.json",
+    "product_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/product_account_training_metrics_20260219_195728.json",
+    "reconciliation_cycle_summary": "/home/realnigga/erp-domain-ml-lab/outputs/continual_learning/reconciliation/cycle_20260220_225455/cycle_summary.json",
+    "reconciliation_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/reconciliation_exception_training_metrics_20260220_191751.json",
+    "review_risk_cycle_summary": "/home/realnigga/erp-domain-ml-lab/outputs/continual_learning/review_risk/cycle_20260220_225228/cycle_summary.json",
+    "review_risk_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/review_risk_training_metrics_20260220_173227.json",
+    "tx_cycle_summary": "/home/realnigga/erp-domain-ml-lab/outputs/continual_learning/tx_coa/cycle_20260220_224258/cycle_summary.json",
+    "tx_scorecard": "/home/realnigga/erp-domain-ml-lab/outputs/tx_coa_eval_20260220_224257/workflow_scorecard.json"
+  },
+  "schema_version": "v0"
+}

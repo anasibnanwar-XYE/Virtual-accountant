@@ -1,0 +1,199 @@
+{
+  "coa_credit_family_change_summary": {
+    "cogs": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 64
+    },
+    "inventory_count": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 51
+    },
+    "payment": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 137
+    },
+    "payroll": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 16
+    },
+    "period_lock": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 38
+    },
+    "purchase": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 322
+    },
+    "sale": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 402
+    },
+    "sale_return": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 74
+    },
+    "settlement_split": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 36
+    },
+    "tax_settlement": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 24
+    },
+    "write_off": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 36
+    }
+  },
+  "coa_credit_top1_change_rate": 0.0,
+  "coa_debit_family_change_summary": {
+    "cogs": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 64
+    },
+    "inventory_count": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 51
+    },
+    "payment": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 137
+    },
+    "payroll": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 16
+    },
+    "period_lock": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 38
+    },
+    "purchase": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 322
+    },
+    "sale": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 402
+    },
+    "sale_return": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 74
+    },
+    "settlement_split": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 36
+    },
+    "tax_settlement": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 24
+    },
+    "write_off": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 36
+    }
+  },
+  "coa_debit_top1_change_rate": 0.0,
+  "coa_rows": 1200,
+  "coa_top1_changed_credit": 0,
+  "coa_top1_changed_debit": 0,
+  "company_code": "BBP",
+  "guardrails": {
+    "global_only_alpha_scale": 0.4,
+    "max_coa_credit_top1_change_rate": 0.35,
+    "max_coa_debit_top1_change_rate": 0.35,
+    "max_family_top1_change_rate": 0.5,
+    "max_tx_top1_change_rate": 0.3,
+    "min_family_eval_rows": 25,
+    "min_family_memory_rows": 3,
+    "min_memory_rows": 5
+  },
+  "memory_jsonl": "/home/realnigga/erp-domain-ml-lab/data/labels/user_personalization_feedback_memory.jsonl",
+  "memory_rows_user": 5,
+  "out_coa_jsonl": "/home/realnigga/erp-domain-ml-lab/outputs/user_personalization/accountant.a_/run_20260220_225732/personalized_coa_mapping_recommendations.jsonl",
+  "out_tx_jsonl": "/home/realnigga/erp-domain-ml-lab/outputs/user_personalization/accountant.a_/run_20260220_225732/personalized_transaction_classifications_v2.jsonl",
+  "schema_version": "v1",
+  "status": "ok",
+  "tx_family_change_summary": {
+    "cogs": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 64
+    },
+    "inventory_count": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 51
+    },
+    "payment": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 137
+    },
+    "payroll": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 16
+    },
+    "period_lock": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 38
+    },
+    "purchase": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 322
+    },
+    "sale": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 402
+    },
+    "sale_return": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 74
+    },
+    "settlement_split": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 36
+    },
+    "tax_settlement": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 24
+    },
+    "write_off": {
+      "change_rate": 0.0,
+      "changed_top1": 0,
+      "rows": 36
+    }
+  },
+  "tx_rows": 1200,
+  "tx_top1_change_rate": 0.0,
+  "tx_top1_changed": 0,
+  "user_id": "accountant.a"
+}

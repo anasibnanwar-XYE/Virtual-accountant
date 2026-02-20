@@ -1,0 +1,17 @@
+{
+  "schema_version": "v0",
+  "profile_name": "erp_v2_human_accountant",
+  "description": "Synthetic training family targets aligned with ERP v2 staging workflows.",
+  "default_weight": 0.02,
+  "families": {
+    "o2c": 0.24,
+    "p2p": 0.20,
+    "inventory_production": 0.14,
+    "banking_settlement": 0.14,
+    "tax_settlement": 0.10,
+    "payroll": 0.08,
+    "returns_reversal": 0.06,
+    "period_close": 0.03,
+    "approvals_override": 0.01
+  }
+}

@@ -9,6 +9,7 @@ Roadmap-aligned execution plan:
 - `docs/ERP_V2_FLOW_AND_CONCURRENCY_PLAN.md`
 - `docs/ERP_V2_SCHEMA_PERSONALIZATION_NOTES.md`
 - `docs/VIRTUAL_ACCOUNTANT_DATA_SCHEMA.md`
+- `docs/VIRTUAL_ACCOUNTANT_LLM_TOOL_BLUEPRINT.md`
 
 Goal:
 - Build accountant-assistive suggestions for ERP (not auto-posting).
@@ -76,6 +77,7 @@ erp-domain-ml-lab/
     34_personalization_guardrail_smoke.sh
     35_monitor_virtual_accountant_learning.sh
     36_convert_training_csv_to_parquet.py
+    37_virtual_accountant_tool_contracts.py
     _row_source.py
     accountant_explanation_pack.py
     gst_tax_audit.py
@@ -465,6 +467,26 @@ bash scripts/35_monitor_virtual_accountant_learning.sh
 ```
 
 This writes one normalized report across tx+coa/product/review-risk/reconciliation/personalization statuses + guardrail alerts.
+
+LLM tool-contract validation + audit trail helper:
+
+```bash
+# generate a sample payload contract
+python3 scripts/37_virtual_accountant_tool_contracts.py sample --tool categorize_transaction
+
+# validate a tool response JSON
+python3 scripts/37_virtual_accountant_tool_contracts.py validate \
+  --tool categorize_transaction \
+  --payload-json /path/to/response.json
+
+# append validated tool call into audit log
+python3 scripts/37_virtual_accountant_tool_contracts.py audit \
+  --tool categorize_transaction \
+  --request-json /path/to/request.json \
+  --response-json /path/to/response.json \
+  --audit-log-jsonl outputs/virtual_accountant_audit/tool_calls.jsonl \
+  --actor accountant.a
+```
 
 Apply user personalization to latest tx+coa run (without retraining):
 

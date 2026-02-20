@@ -1,63 +1,60 @@
 {
-  "challenger_bundle": "/home/realnigga/erp-domain-ml-lab/models/product_account_registry/orchestrator_erp.product_account_recommender.v1/0c57d8106fe4e0639a7eec74f281381c87f29d408b22f30d333d89430e236262",
-  "challenger_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/product_account_training_metrics_20260220_224259.json",
-  "feedback_memory": "/home/realnigga/erp-domain-ml-lab/data/labels/product_account_feedback_memory.jsonl",
-  "fingerprint_state_file": "/home/realnigga/erp-domain-ml-lab/outputs/current_product_account_training_fingerprint.json",
+  "challenger_bundle": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/models/product_account_registry/orchestrator_erp.product_account_recommender.v1/502ec1fa527194bd989965ae7f8e0ef068551cb4e96d7dc258b6c58f6de663d7",
+  "challenger_metrics": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/outputs/product_account_training_metrics_20260221_011844.json",
+  "feedback_memory": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/data/labels/product_account_feedback_memory.jsonl",
+  "fingerprint_state_file": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/outputs/current_product_account_training_fingerprint.json",
   "gate_decision": {
-    "challenger_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/product_account_training_metrics_20260220_224259.json",
-    "champion_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/product_account_training_metrics_20260219_195728.json",
+    "challenger_metrics": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/outputs/product_account_training_metrics_20260221_011844.json",
+    "champion_metrics": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/outputs/product_account_training_metrics_20260221_002336.json",
     "guardrails": {
       "max_degrade_core": 0.005,
       "max_degrade_discount": 0.02,
       "min_overall_delta": -0.001
     },
     "overall": {
-      "challenger_mean_holdout_top1": 0.9237778000000001,
-      "champion_mean_holdout_top1": 0.96864,
-      "delta": -0.04486219999999985
+      "challenger_mean_holdout_top1": 0.954857,
+      "champion_mean_holdout_top1": 0.9551294,
+      "delta": -0.0002724000000000615
     },
     "per_target": {
       "cogs": {
-        "challenger_holdout_top1": 0.855556,
-        "champion_holdout_top1": 0.9632,
-        "delta": -0.10764399999999996
+        "challenger_holdout_top1": 0.968571,
+        "champion_holdout_top1": 0.952061,
+        "delta": 0.016509999999999914
       },
       "discount": {
-        "challenger_holdout_top1": 0.836667,
-        "champion_holdout_top1": 0.9076,
-        "delta": -0.07093299999999991
+        "challenger_holdout_top1": 0.894286,
+        "champion_holdout_top1": 0.897411,
+        "delta": -0.0031249999999999334
       },
       "inventory": {
-        "challenger_holdout_top1": 0.978889,
-        "champion_holdout_top1": 0.9824,
-        "delta": -0.003511000000000042
+        "challenger_holdout_top1": 0.950476,
+        "champion_holdout_top1": 0.941515,
+        "delta": 0.008960999999999997
       },
       "revenue": {
-        "challenger_holdout_top1": 0.993333,
+        "challenger_holdout_top1": 0.982857,
         "champion_holdout_top1": 1.0,
-        "delta": -0.0066669999999999785
+        "delta": -0.01714300000000002
       },
       "tax": {
-        "challenger_holdout_top1": 0.954444,
-        "champion_holdout_top1": 0.99,
-        "delta": -0.03555600000000003
+        "challenger_holdout_top1": 0.978095,
+        "champion_holdout_top1": 0.98466,
+        "delta": -0.006564999999999932
       }
     },
     "promote": false,
     "schema_version": "v0",
     "violations": [
-      "core_target_drop:revenue:-0.006667 < -0.005000",
-      "core_target_drop:cogs:-0.107644 < -0.005000",
-      "core_target_drop:tax:-0.035556 < -0.005000",
-      "discount_drop:discount:-0.070933 < -0.020000",
-      "overall_drop:-0.044862 < -0.001000"
+      "core_target_drop:revenue:-0.017143 < -0.005000",
+      "core_target_drop:tax:-0.006565 < -0.005000"
     ]
   },
-  "previous_champion_bundle": "/home/realnigga/erp-domain-ml-lab/models/product_account_registry/orchestrator_erp.product_account_recommender.v1/bf21a82c87a043c3261848e8f6c8048bd13d5b7f46aa04a37f0570d83f2b28aa",
-  "previous_champion_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/product_account_training_metrics_20260219_195728.json",
+  "previous_champion_bundle": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/models/product_account_registry/orchestrator_erp.product_account_recommender.v1/05a0bccf6eec3b6066d18572958abdce0e90761ca3af9cac4726d79679e3d901",
+  "previous_champion_metrics": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/outputs/product_account_training_metrics_20260221_002336.json",
   "schema_version": "v0",
   "status": "rejected",
-  "training_csv": "/home/realnigga/erp-domain-ml-lab/data/training/orchestrator_training_rebalanced_6000_20260220_185823.csv",
-  "training_fingerprint": "f84aba77709ab59045c00cece9e8e7125229f8383a7e8ea83a09003c1392f0d2",
+  "training_csv": "data/training/virtual_accountant_training_hard_v2_hardpack_v2_20260220.csv",
+  "training_fingerprint": "6c73f5bb21112167e2a2a7ca362d0216d0e74011f3ae50b193a2db8622bce81d",
   "training_skipped": false
 }

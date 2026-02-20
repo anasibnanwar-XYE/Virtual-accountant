@@ -3,121 +3,121 @@
     "cogs": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 64
+      "rows": 299
     },
     "inventory_count": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 51
+      "rows": 234
     },
     "payment": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 137
+      "rows": 614
     },
     "payroll": {
-      "change_rate": 0.0,
-      "changed_top1": 0,
-      "rows": 16
+      "change_rate": 0.012987012987012988,
+      "changed_top1": 1,
+      "rows": 77
     },
     "period_lock": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 38
+      "rows": 179
     },
     "purchase": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 322
+      "rows": 1510
     },
     "sale": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 402
+      "rows": 2126
     },
     "sale_return": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 74
+      "rows": 396
     },
     "settlement_split": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 36
+      "rows": 218
     },
     "tax_settlement": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 24
+      "rows": 119
     },
     "write_off": {
-      "change_rate": 0.0,
-      "changed_top1": 0,
-      "rows": 36
+      "change_rate": 0.06140350877192982,
+      "changed_top1": 14,
+      "rows": 228
     }
   },
-  "coa_credit_top1_change_rate": 0.0,
+  "coa_credit_top1_change_rate": 0.0025,
   "coa_debit_family_change_summary": {
     "cogs": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 64
+      "rows": 299
     },
     "inventory_count": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 51
+      "rows": 234
     },
     "payment": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 137
+      "rows": 614
     },
     "payroll": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 16
+      "rows": 77
     },
     "period_lock": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 38
+      "rows": 179
     },
     "purchase": {
-      "change_rate": 0.0,
-      "changed_top1": 0,
-      "rows": 322
+      "change_rate": 0.03443708609271523,
+      "changed_top1": 52,
+      "rows": 1510
     },
     "sale": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 402
+      "rows": 2126
     },
     "sale_return": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 74
+      "rows": 396
     },
     "settlement_split": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 36
+      "rows": 218
     },
     "tax_settlement": {
-      "change_rate": 0.0,
-      "changed_top1": 0,
-      "rows": 24
+      "change_rate": 0.008403361344537815,
+      "changed_top1": 1,
+      "rows": 119
     },
     "write_off": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 36
+      "rows": 228
     }
   },
-  "coa_debit_top1_change_rate": 0.0,
-  "coa_rows": 1200,
-  "coa_top1_changed_credit": 0,
-  "coa_top1_changed_debit": 0,
+  "coa_debit_top1_change_rate": 0.008833333333333334,
+  "coa_rows": 6000,
+  "coa_top1_changed_credit": 15,
+  "coa_top1_changed_debit": 53,
   "company_code": "BBP",
   "guardrails": {
     "global_only_alpha_scale": 0.4,
@@ -129,71 +129,71 @@
     "min_family_memory_rows": 3,
     "min_memory_rows": 5
   },
-  "memory_jsonl": "/home/realnigga/erp-domain-ml-lab/data/labels/user_personalization_feedback_memory.jsonl",
-  "memory_rows_user": 5,
-  "out_coa_jsonl": "/home/realnigga/erp-domain-ml-lab/outputs/user_personalization/accountant.a_/run_20260220_225732/personalized_coa_mapping_recommendations.jsonl",
-  "out_tx_jsonl": "/home/realnigga/erp-domain-ml-lab/outputs/user_personalization/accountant.a_/run_20260220_225732/personalized_transaction_classifications_v2.jsonl",
+  "memory_jsonl": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/data/labels/user_personalization_feedback_memory.jsonl",
+  "memory_rows_user": 16,
+  "out_coa_jsonl": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/outputs/user_personalization/accountant.a_/run_20260221_013826/personalized_coa_mapping_recommendations.jsonl",
+  "out_tx_jsonl": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/outputs/user_personalization/accountant.a_/run_20260221_013826/personalized_transaction_classifications_v2.jsonl",
   "schema_version": "v1",
   "status": "ok",
   "tx_family_change_summary": {
     "cogs": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 64
+      "rows": 299
     },
     "inventory_count": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 51
+      "rows": 234
     },
     "payment": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 137
+      "rows": 614
     },
     "payroll": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 16
+      "rows": 77
     },
     "period_lock": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 38
+      "rows": 179
     },
     "purchase": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 322
+      "rows": 1510
     },
     "sale": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 402
+      "rows": 2126
     },
     "sale_return": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 74
+      "rows": 396
     },
     "settlement_split": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 36
+      "rows": 218
     },
     "tax_settlement": {
-      "change_rate": 0.0,
-      "changed_top1": 0,
-      "rows": 24
+      "change_rate": 0.15966386554621848,
+      "changed_top1": 19,
+      "rows": 119
     },
     "write_off": {
       "change_rate": 0.0,
       "changed_top1": 0,
-      "rows": 36
+      "rows": 228
     }
   },
-  "tx_rows": 1200,
-  "tx_top1_change_rate": 0.0,
-  "tx_top1_changed": 0,
+  "tx_rows": 6000,
+  "tx_top1_change_rate": 0.0031666666666666666,
+  "tx_top1_changed": 19,
   "user_id": "accountant.a"
 }

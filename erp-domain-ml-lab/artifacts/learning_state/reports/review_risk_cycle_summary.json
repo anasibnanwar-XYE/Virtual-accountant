@@ -1,10 +1,10 @@
 {
-  "challenger_bundle": "/home/realnigga/erp-domain-ml-lab/models/review_risk_registry/orchestrator_erp.review_risk_model.v1/969b52fa91236b18573fb1a96d279d6e8a32189b5eb8485cc4138f078627e03a",
-  "challenger_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/review_risk_training_metrics_20260220_225228.json",
-  "fingerprint_state_file": "/home/realnigga/erp-domain-ml-lab/outputs/current_review_risk_training_fingerprint.json",
+  "challenger_bundle": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/models/review_risk_registry/orchestrator_erp.review_risk_model.v1/37366700187b7abfac820249d8607038a3c6dc5f62110410a2865a95d8fbb598",
+  "challenger_metrics": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/outputs/review_risk_training_metrics_20260221_012958.json",
+  "fingerprint_state_file": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/outputs/current_review_risk_training_fingerprint.json",
   "gate_decision": {
-    "challenger_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/review_risk_training_metrics_20260220_225228.json",
-    "champion_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/review_risk_training_metrics_20260220_173227.json",
+    "challenger_metrics": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/outputs/review_risk_training_metrics_20260221_012958.json",
+    "champion_metrics": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/outputs/review_risk_training_metrics_20260221_003430.json",
     "guardrails": {
       "max_fnr_increase": 0.02,
       "max_predicted_positive_rate_drop": 0.08,
@@ -18,49 +18,47 @@
     "schema_version": "v0",
     "scores": {
       "challenger_holdout": {
-        "accuracy": 0.9775,
-        "examples": 1200.0,
-        "f1": 0.914286,
-        "fnr": 0.121951,
-        "fpr": 0.006757,
-        "positive_rate": 0.136667,
-        "precision": 0.953642,
-        "predicted_positive_rate": 0.125833,
-        "recall": 0.878049
+        "accuracy": 0.984702,
+        "examples": 1961.0,
+        "f1": 0.978843,
+        "fnr": 0.014205,
+        "fpr": 0.015911,
+        "positive_rate": 0.359001,
+        "precision": 0.971989,
+        "predicted_positive_rate": 0.3641,
+        "recall": 0.985795
       },
       "champion_holdout": {
-        "accuracy": 0.989,
-        "examples": 1000.0,
-        "f1": 0.951111,
-        "fnr": 0.077586,
-        "fpr": 0.002262,
-        "positive_rate": 0.116,
-        "precision": 0.981651,
-        "predicted_positive_rate": 0.109,
-        "recall": 0.922414
+        "accuracy": 0.899048,
+        "examples": 525.0,
+        "f1": 0.682635,
+        "fnr": 0.462264,
+        "fpr": 0.009547,
+        "positive_rate": 0.201905,
+        "precision": 0.934426,
+        "predicted_positive_rate": 0.11619,
+        "recall": 0.537736
       },
       "deltas": {
-        "accuracy_delta": -0.011499999999999955,
-        "f1_delta": -0.036825,
-        "fnr_delta": 0.044365,
-        "positive_rate_delta": 0.020667000000000005,
-        "precision_delta": -0.02800900000000006,
-        "predicted_positive_rate_delta": 0.016833,
-        "recall_delta": -0.04436499999999999
+        "accuracy_delta": 0.08565400000000001,
+        "f1_delta": 0.296208,
+        "fnr_delta": -0.448059,
+        "positive_rate_delta": 0.157096,
+        "precision_delta": 0.03756300000000001,
+        "predicted_positive_rate_delta": 0.24790999999999996,
+        "recall_delta": 0.448059
       }
     },
     "violations": [
-      "recall_drop:-0.044365 < -0.020000",
-      "f1_drop:-0.036825 < -0.010000",
-      "fnr_increase:0.044365 > 0.020000"
+      "predicted_positive_rate_increase:0.247910 > 0.080000"
     ]
   },
-  "override_memory_jsonl": "/home/realnigga/erp-domain-ml-lab/data/labels/override_reason_feedback_memory.jsonl",
-  "previous_champion_bundle": "/home/realnigga/erp-domain-ml-lab/models/review_risk_registry/orchestrator_erp.review_risk_model.v1/0cafadb9ec42494b013e573fcc15b3b7155b9cb12b14e9da06de907473718d6f",
-  "previous_champion_metrics": "/home/realnigga/erp-domain-ml-lab/outputs/review_risk_training_metrics_20260220_173227.json",
+  "override_memory_jsonl": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/data/labels/override_reason_feedback_memory.jsonl",
+  "previous_champion_bundle": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/models/review_risk_registry/orchestrator_erp.review_risk_model.v1/b248ffcf97678e6cc860e280900ff53c2b32dc0e0035dcdc20c2fd22475efa5d",
+  "previous_champion_metrics": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/outputs/review_risk_training_metrics_20260221_003430.json",
   "schema_version": "v0",
   "status": "rejected",
-  "training_csv": "/home/realnigga/erp-domain-ml-lab/data/training/orchestrator_training_rebalanced_6000_20260220_185823.csv",
-  "training_fingerprint": "0974ebf74dd358ed6e560aacbbfb23fb16a8a8ed9be292e32b110df99187bf7a",
+  "training_csv": "data/training/virtual_accountant_training_hard_v2_hardpack_v2_20260220.csv",
+  "training_fingerprint": "7c926f1bb1409422bf6ecd3d792f4e4b68168399e88ecbd06897c21aee3f37d4",
   "training_skipped": false
 }

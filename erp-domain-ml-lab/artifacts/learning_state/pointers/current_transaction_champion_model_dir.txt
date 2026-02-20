@@ -1,1 +1,1 @@
-/home/realnigga/erp-domain-ml-lab/models/model_registry/orchestrator_erp.transaction_classifier.v2/7b1c3d631dd8d39bf07a390521178b6473c1eac95df9d29c2e5041fdc5b81196
+/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/models/model_registry/orchestrator_erp.transaction_classifier.v2/a69dd2263975375ed58b6c5dd489b92947c8d524330ab801fa9b486099f526d0

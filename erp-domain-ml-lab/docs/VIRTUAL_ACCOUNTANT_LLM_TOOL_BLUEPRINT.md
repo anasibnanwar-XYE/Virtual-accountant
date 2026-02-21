@@ -88,7 +88,8 @@ Recommended path:
 ## Integration Order
 
 1. enforce tool contracts in current scripts
-2. connect LLM orchestration to tool invocations only
+2. connect LLM orchestration to tool invocations only  
+Status: implemented with `scripts/38_virtual_accountant_orchestrator.py` (runtime tool execution + contract validation + audit append)
 3. block non-validated tool payloads from final chat response
 4. add threshold policies per workflow family
 5. add role-based action gates for posting/approval

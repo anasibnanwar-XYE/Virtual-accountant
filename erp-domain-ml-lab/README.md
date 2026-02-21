@@ -78,6 +78,7 @@ erp-domain-ml-lab/
     35_monitor_virtual_accountant_learning.sh
     36_convert_training_csv_to_parquet.py
     37_virtual_accountant_tool_contracts.py
+    38_virtual_accountant_orchestrator.py
     _row_source.py
     accountant_explanation_pack.py
     gst_tax_audit.py
@@ -487,6 +488,32 @@ python3 scripts/37_virtual_accountant_tool_contracts.py audit \
   --audit-log-jsonl outputs/virtual_accountant_audit/tool_calls.jsonl \
   --actor accountant.a
 ```
+
+Runtime orchestrator (tool call -> contract validate -> audit append):
+
+```bash
+# 1) prepare request JSON for one tool
+cat > /tmp/va_tool_request.json <<'JSON'
+{
+  "training_csv": "/home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab/data/training/virtual_accountant_training_hard_v2_hardpack_v2_20260220.csv",
+  "period": "2026-02",
+  "currency": "INR"
+}
+JSON
+
+# 2) execute orchestrated tool call
+python3 scripts/38_virtual_accountant_orchestrator.py \
+  --tool generate_monthly_summary \
+  --input-json /tmp/va_tool_request.json \
+  --out-json /tmp/va_tool_response.json \
+  --actor accountant.a
+```
+
+Supported `--tool` values:
+- `categorize_transaction`
+- `detect_anomalies`
+- `forecast_cashflow`
+- `generate_monthly_summary`
 
 Apply user personalization to latest tx+coa run (without retraining):
 

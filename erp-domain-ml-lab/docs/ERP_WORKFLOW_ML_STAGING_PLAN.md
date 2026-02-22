@@ -1,222 +1,213 @@
-# ERP Workflow ML Staging Plan (Synthetic-First)
+# ERP Workflow ML Staging Plan (Copilot Redesign)
 
-Last updated: 2026-02-20
+Last updated: 2026-02-22
 
-This plan aligns ML training with `ERP_STAGING_MASTER_PLAN` stability goals.
+This roadmap redesign moves from isolated label models to a ledger-aware accounting copilot, while preserving strict advisory safety and champion/challenger governance.
 
-Full-scope target blueprint:
+Related docs:
 - `docs/VIRTUAL_ACCOUNTANT_BLUEPRINT.md`
+- `docs/VIRTUAL_ACCOUNTANT_COPILOT_ARCHITECTURE.md`
+- `docs/ERP_V2_FLOW_AND_CONCURRENCY_PLAN.md`
 - `docs/INDIA_GST_BOOKKEEPING_ML_PLAYBOOK.md`
 
-## 1. Goal and Guardrails
+## 1. Goal and Non-Goal
 
-- Goal: advisory-only ERP intelligence for transaction classification, CoA linkage, and product-account suggestions.
-- Non-goal: autonomous posting.
-- Hard guardrails:
-  - keep human approval before posting,
-  - keep confidence threshold + review queue,
-  - keep model/artifact lineage per run (dataset + model hashes).
+Goal:
+- advisory-first virtual accountant that predicts, ranks, and explains accounting actions with policy-safe outputs.
 
-## 2. M18 Roadmap Mapping
+Non-goal:
+- unrestricted autonomous posting.
 
-- M18-S3 workflow closure (O2C/P2P): workflow-aware features + policy reranking.
-- M18-S5 split settlement safety: synthetic split settlement patterns + split-entry features.
-- M18-S6 GST/non-GST hardening: GST/tax settlement synthetic patterns + GST account features.
-- M18-S4 override hardening: policy banding (`preferred`/`discouraged`/`blocked`) in CoA rerank.
+Mandatory safety:
+- human approval in high-risk workflows,
+- policy and period-lock hard checks,
+- full lineage: dataset hash, model hash, policy version, evaluation bundle.
 
-## 3. Synthetic Data Program
+## 2. Architecture Redesign
 
-Use deterministic synthetic profiles:
+### 2.1 Ledger-aware decision modeling
 
-- `balanced`: broad coverage baseline.
-- `staging_m18`: heavier payment/settlement/GST focus.
-- `accounting_hardening`: strongest stress on edge postings and reversals.
+Move from row-only inference to state-aware inference using:
+- vendor/customer/account priors,
+- recent posting behavior windows,
+- open invoice/payment allocation context,
+- workflow state and period state,
+- tax/GST context and rule flags.
 
-Synthetic scenarios now included in training corpus:
+### 2.2 Multi-task copilot core
 
-- cash vs receivable sales settlement,
-- GRN/GRNI-style purchase postings,
-- split settlements (bank+cash+discount lines),
-- tax settlement postings,
-- payroll journal/payment clearing patterns,
-- standard COGS/write-off/inventory count/period lock flows.
+Target training architecture:
+- shared backbone + specialized heads.
 
-ERP-v2 flow rebalance (new):
-- workflow custom training now rebalances synthetic rows to ERP-v2 family targets by default:
-  - `scripts/29_rebalance_training_by_erp_flow.py`
-  - `configs/erp_v2_flow_targets.json`
-- this keeps the same CSV schema but shifts family distribution toward roadmap-critical flows.
+Heads:
+- transaction intent/workflow,
+- CoA debit,
+- CoA credit,
+- tax/GST treatment,
+- review risk,
+- reconciliation exception,
+- next-best-action (click/process policy).
 
-## 4. Training Strategy
+### 2.3 Retrieval + rerank
 
-1. Train transaction classifier v2 with workflow profile `staging_m18`.
-2. Train CoA recommender v1 on same corpus (rows with journal lines).
-3. Train product-account recommender on synthetic + transaction-derived product aggregates.
-4. Run holdout synthetic snapshot eval.
-5. Gate on metrics:
-   - tx accuracy and auto-accept safety at 0.90/0.95 thresholds,
-   - CoA top-1/top-3 for debit+credit,
-   - product-account top-1/top-3 across revenue/cogs/inventory/tax/discount,
-   - workflow policy output presence and consistency.
+For long-tail accounting labels, use:
+1. candidate retrieval (CoA/match candidates from historical memory and master data),
+2. context rerank model,
+3. policy/constraint filtering.
 
-## 5. Runtime Policy Layer
+### 2.4 Constraint-aware finalization
 
-CoA reranker policy now reasons over workflow families:
+ML scores candidates; constrained layer enforces accounting validity:
+- debit=credit,
+- period lock constraints,
+- tax/GST constraints,
+- allocation bounds,
+- blocked/discouraged policy bands.
 
-- sale / purchase / payment,
-- settlement_split,
-- tax_settlement,
-- payroll,
-- returns / cogs / write-off / inventory_count / period_lock.
+### 2.5 Personalization adapters
 
-Each recommendation includes:
+Serving model strategy:
+- global base model,
+- company adapter,
+- user/role adapter.
 
-- `raw_score`,
-- `policy_delta`,
-- `policy_band`,
-- `policy_reason`,
-- `workflow_context`, `policy_summary`.
+Guardrails:
+- min memory thresholds,
+- capped top-1 shift rates,
+- automatic revert-to-base on instability.
 
-## 6. Operational Runbook
+### 2.6 RAG for explanation and evidence
 
-Primary one-command run:
+RAG scope:
+- retrieve policy snippets, prior approved analogs, and workflow evidence,
+- generate accountant-facing rationale and alternatives.
+
+RAG is not allowed to replace accounting arithmetic or policy hard checks.
+
+### 2.7 Concurrency model
+
+Production-safe operating pattern:
+- many-reader stateless inference,
+- single-writer training/promotion,
+- lock-safe feedback ingestion,
+- immutable artifacts and replayable decisions.
+
+## 3. Redesigned Roadmap
+
+### Phase 0 (Completed): Safety baseline
+
+Delivered:
+- champion/challenger loops for tx+coa/product/risk/reconciliation,
+- GST staged guardrails,
+- override-memory enrichment,
+- user personalization with guardrail auto-revert,
+- lock-safe ingestion and single-writer loop locks.
+
+### Phase 1 (Now): Copilot feature foundation
+
+Deliver:
+1. unified ledger-state feature contract,
+2. multi-task training set builder (shared sample ID across heads),
+3. backward-compatible adapters to existing per-head scripts.
+
+Exit gates:
+- no regression against current champion gates,
+- stable workflow-sliced holdout metrics.
+
+### Phase 2: Retrieval + rerank rollout
+
+Deliver:
+1. CoA candidate retriever,
+2. invoice/PO/receipt matching candidate retriever,
+3. rerank integration into advisory payloads.
+
+Exit gates:
+- top-k improvement on low-frequency classes,
+- reduced override rates for long-tail mappings.
+
+### Phase 3: Constraint-aware action engine
+
+Deliver:
+1. constrained decoder for proposed journal/action outputs,
+2. explicit constraint violation taxonomy,
+3. deterministic replay for blocked recommendations.
+
+Exit gates:
+- zero policy-invalid accepted outcomes in evaluation slices.
+
+### Phase 4: Action policy copilot
+
+Deliver:
+1. next-best-action head for click/process prediction,
+2. review routing policy from calibrated uncertainty,
+3. abstain/escalate outputs for low-confidence cases.
+
+Exit gates:
+- improved review precision,
+- lower correction-loop rate in pilot workflows.
+
+### Phase 5: Explainable assistant layer
+
+Deliver:
+1. RAG index for policy/history evidence,
+2. grounded explanation outputs with citations,
+3. conflict-aware response mode.
+
+Exit gates:
+- accountant explanation acceptance target,
+- no unsupported claim in sampled audits.
+
+## 4. Data Program Redesign
+
+Synthetic-first remains, but contracts expand from labels to decision process traces:
+- `state -> candidates -> selected_action -> result`,
+- constraint failure reasons,
+- override reason and corrected action,
+- personalization context (`company_code`, `user_id`, `role`).
+
+Required IDs:
+- `decision_id`, `sample_id`, `workflow_family`, `policy_version`, `model_version`.
+
+## 5. Immediate 2-Sprint Plan
+
+Sprint A:
+1. ledger-state feature extraction schema and builder,
+2. candidate retrieval index generation,
+3. scorecard extension for candidate recall and rerank lift.
+
+Sprint B:
+1. retrieval+rereank in tx+coa advisory path (feature-flagged),
+2. constrained post-processing for proposed accounting actions,
+3. next-best-action prototype head using workflow traces.
+
+## 6. Current Operations and Commands
+
+Full continual tick:
 
 ```bash
-cd /home/realnigga/erp-domain-ml-lab
-WF_PROFILE=staging_m18 WF_V2_EPOCHS=6 WF_COA_EPOCHS=6 \
-  bash scripts/09_train_workflow_custom_synthetic.sh 30000 17 77 4000
+cd /home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab
+bash scripts/17_run_full_continual_learning_tick.sh -t data/training/virtual_accountant_training_synthetic_batch_20260220.csv -u accountant.a
 ```
 
-Quick baseline generation:
+GPU run:
 
 ```bash
-cd /home/realnigga/erp-domain-ml-lab
-SYNTHETIC_WORKFLOW_PROFILE=balanced bash scripts/02_generate_training_data.sh 50000
-# optional:
-# ERP_V2_FLOW_REBALANCE=true bash scripts/02_generate_training_data.sh 50000
+cd /home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab
+V2_DEVICE=cuda COA_DEVICE=cuda PRODUCT_DEVICE=cuda RISK_DEVICE=cuda RECON_DEVICE=cuda \
+  bash scripts/17_run_full_continual_learning_tick.sh -t data/training/virtual_accountant_training_synthetic_batch_20260220.csv -u accountant.a
 ```
 
-Product-account training:
+Learning monitor:
 
 ```bash
-cd /home/realnigga/erp-domain-ml-lab
-bash scripts/10_train_product_account_recommender.sh
+cd /home/realnigga/Virtual-accountant-sync/erp-domain-ml-lab
+bash scripts/35_monitor_virtual_accountant_learning.sh
 ```
 
-## 7. Exit Criteria for “Virtual Accountant Readiness Prep”
+## 7. Governance Rules (Fixed)
 
-Before any broader autonomy experiments:
-
-- stable accuracy across multiple seeds,
-- stable CoA top-1/top-3 across multiple seeds,
-- no policy violations for blocked account classes in target workflows,
-- strict human-approval workflow remains enforced in ERP.
-
-## 8. Continual Learning Loop (Synthetic-First -> Real Feedback)
-
-Product-account continual loop is now formalized with champion/challenger gating:
-
-1. ingest accountant corrections into canonical memory:
-   - `bash scripts/12_ingest_product_feedback.sh /path/to/feedback.csv`
-   - memory file: `data/labels/product_account_feedback_memory.jsonl`
-2. train challenger with synthetic + transaction aggregates + memory:
-   - `bash scripts/13_train_product_account_continual.sh`
-3. gate for safe promotion:
-   - no material drop on core targets (`revenue/cogs/inventory/tax`)
-   - bounded drop allowance on `discount`
-   - bounded overall mean holdout drop
-4. auto-promote only when gate passes; otherwise revert to previous champion pointers.
-5. efficiency hardening for unattended runs:
-   - product continual loop can skip retraining when no data/feedback/parameter change is detected (`PRODUCT_CONTINUAL_SKIP_IF_NO_CHANGE=true`)
-   - each cycle still writes auditable summary artifacts and updates fingerprint state
-
-Operational cadence:
-- daily or weekly `scripts/14_run_continual_learning_tick.sh`
-- include `-r reviewed_transaction_queue.csv` when transaction review labels are available
-- include `-f product_feedback.csv` for new product-account corrections
-- controlled status snapshot across tx+coa/product/risk/reconciliation/personalization:
-  - `bash scripts/35_monitor_virtual_accountant_learning.sh`
-
-TX+CoA continual loop (implemented):
-- evaluate any tx+coa pair with workflow slices:
-  - `bash scripts/15_eval_tx_coa_scorecard.sh <snapshot> <tx_model_dir> <coa_bundle_dir>`
-- generate workflow-specific threshold/routing policy + routed actions:
-  - `bash scripts/28_generate_workflow_routing.sh <run_dir> <workflow_scorecard.json>`
-- champion/challenger tx+coa cycle:
-  - `bash scripts/16_train_tx_coa_continual.sh`
-- full one-command continual tick (tx+coa + product + review-risk):
-  - `bash scripts/17_run_full_continual_learning_tick.sh`
-- accountant-facing explanation pack for review UI templates:
-  - `bash scripts/18_generate_explanation_pack.sh`
-- GST/tax advisory audit pass on tx+coa outputs:
-  - `bash scripts/19_run_gst_tax_audit.sh`
-
-Hard safety checks now included in tx+coa promotion gate:
-- blocked top-1 policy-band rate limit
-- discouraged top-1 policy-band rate limit
-- drift limits for blocked/discouraged top-1 policy rates
-- threshold-level acceptance-quality drift limits (auto-accept rate, auto-accept accuracy, review-rate)
-- strict `PERIOD_LOCK` auto-accept protection (disabled only via explicit override env)
-- GST/tax audit regression checks (major fail-rate, critical issues, and sale/purchase tax-missing deltas)
-- staged GST rollout supported by `TX_COA_GST_GUARDRAIL_PROFILE` (`stage1` -> `stage2` -> `stage3`)
-- stage progression can be automated in continual loop with persistent state (`scripts/21_update_gst_guardrail_stage.py`)
-- workflow-family threshold policy artifacts generated each tx+coa eval:
-  - `workflow_routing_policy.json`
-  - `workflow_routing_decisions.jsonl`
-  - `workflow_routing_summary.json`
-
-Override memory learning (implemented):
-- ingest accountant override reasons into canonical memory:
-  - `bash scripts/27_ingest_override_reason_feedback.sh /path/to/override_feedback.csv`
-  - memory file: `data/labels/override_reason_feedback_memory.jsonl`
-- tx+coa continual cycle enriches training CSV using override memory before retraining:
-  - `scripts/override_reason_enrich_training_csv.py`
-- review-risk and reconciliation loops include override memory in train fingerprints and optional model training input.
-
-Review-risk continual loop (implemented):
-- baseline train:
-  - `bash scripts/23_train_review_risk_model.sh`
-- champion/challenger continual cycle:
-  - `bash scripts/24_train_review_risk_continual.sh`
-- predicted-positive-rate drift guardrails added in champion/challenger gate.
-- included in full one-command continual tick:
-  - `bash scripts/17_run_full_continual_learning_tick.sh`
-
-Reconciliation continual loop (implemented):
-- baseline train:
-  - `bash scripts/25_train_reconciliation_exception_model.sh`
-- champion/challenger continual cycle:
-  - `bash scripts/26_train_reconciliation_continual.sh`
-- predicted-positive-rate drift guardrails added in champion/challenger gate.
-- included in full one-command continual tick:
-  - `bash scripts/17_run_full_continual_learning_tick.sh`
-
-User personalization learning (implemented):
-- ingest user-level correction memory:
-  - `bash scripts/32_ingest_user_personalization_feedback.sh /path/to/user_personalization_feedback.csv`
-  - memory file: `data/labels/user_personalization_feedback_memory.jsonl`
-- apply per-user rerank to tx+coa advisory outputs:
-  - `bash scripts/33_apply_user_personalization.sh <user_id> [tx_coa_eval_run_dir] [company_code]`
-- optional in full one-command continual tick:
-  - `bash scripts/17_run_full_continual_learning_tick.sh -u <user_id>`
-- personalization is advisory-only and does not bypass policy/routing guardrails.
-- quality-first personalization guardrails:
-  - minimum user-memory rows required before applying rerank,
-  - minimum workflow-family memory rows before family priors can be used,
-  - global-only conservative rerank for low-evidence workflow families,
-  - max allowed top-1 shift rates for tx/debit/credit rerank outputs,
-  - max allowed per-family top-1 shift rates on sufficiently represented families,
-  - auto-revert to base outputs when guardrails are violated.
-
-Concurrency/persistence hardening (implemented):
-- feedback ingestors now use lock-safe append + dedupe and fsync durability:
-  - `scripts/product_feedback_ingest.py`
-  - `scripts/override_reason_feedback_ingest.py`
-- continual loops now enforce single-writer locking:
-  - `scripts/13_train_product_account_continual.sh`
-  - `scripts/16_train_tx_coa_continual.sh`
-  - `scripts/17_run_full_continual_learning_tick.sh`
-  - `scripts/24_train_review_risk_continual.sh`
-  - `scripts/26_train_reconciliation_continual.sh`
-- lock utility:
-  - `scripts/_common.sh` (`acquire_lab_lock`)
+- advisory-first default,
+- gated promotion only,
+- hard policy constraints before recommendation output,
+- auditable replay for every decision path,
+- automatic fallback to previous champion on regressions.

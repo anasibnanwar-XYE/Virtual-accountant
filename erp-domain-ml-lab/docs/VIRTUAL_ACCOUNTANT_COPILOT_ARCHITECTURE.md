@@ -26,6 +26,15 @@ Train one shared backbone with multiple heads:
 
 Keep existing specialist heads as fallback while shared backbone matures.
 
+Practical low-footprint baseline:
+- shared trunk: `input -> 128 -> 64`
+- thin heads on top of the `64` representation.
+
+Rationale:
+- avoids relearning accounting context separately in each head,
+- improves cross-head consistency (`tx`, `coa`, `risk`, `recon`),
+- keeps parameter footprint small enough for fast iteration.
+
 ## 2.2 Retrieval + rerank
 
 For CoA and document matching:
@@ -59,7 +68,26 @@ Guardrails:
 - per-family drift limits,
 - auto-revert to base if violated.
 
-## 2.5 RAG layer
+Recommended rollout for personalization:
+1. Phase P1 (1-5 companies): per-company logit bias vectors only.
+2. Phase P2: add low-rank company adapters (`64 -> r -> 64`, small `r` like `8`).
+3. Phase P3: include user/role adapters where enough memory exists.
+
+This gives fast personalization now without locking architecture.
+
+## 2.5 COA head evolution (classification -> embedding retrieval)
+
+Current fixed-size debit/credit heads are acceptable for bootstrapping but should evolve to:
+- context embedding `h`,
+- company-scoped account embedding table `E_company[account_id]`,
+- score via dot product (retrieve/rank), then rerank top-N with richer account features.
+
+Benefits:
+- handles company-specific COA growth without hardcoded class dimensions,
+- naturally supports long-tail accounts,
+- cleaner online addition of new accounts.
+
+## 2.6 RAG layer
 
 RAG should support explanation and evidence, not arithmetic:
 - retrieve policy notes and prior approved analogs,
@@ -101,11 +129,14 @@ Low-confidence or high-risk classes route to review queue automatically.
 
 ## 6. Rollout order
 
-1. shared feature contract and multi-task dataset builder,
-2. retrieval+rereank for CoA/matching,
-3. constrained decision layer,
-4. action-policy (next-click) head,
-5. RAG explanation integration.
+1. shared feature contract + shared trunk with thin heads,
+2. company logit-bias personalization,
+3. retrieval+rereank for CoA/matching,
+4. company low-rank adapters,
+5. constrained decision layer,
+6. action-policy (next-click) head,
+7. COA embedding retrieval head migration,
+8. RAG explanation integration.
 
 ## 7. Success metrics
 

@@ -108,7 +108,8 @@ Delivered:
 Deliver:
 1. unified ledger-state feature contract,
 2. multi-task training set builder (shared sample ID across heads),
-3. backward-compatible adapters to existing per-head scripts.
+3. shared trunk + thin multi-head baseline (`input -> 128 -> 64`),
+4. backward-compatible adapters to existing per-head scripts.
 
 Exit gates:
 - no regression against current champion gates,
@@ -119,7 +120,8 @@ Exit gates:
 Deliver:
 1. CoA candidate retriever,
 2. invoice/PO/receipt matching candidate retriever,
-3. rerank integration into advisory payloads.
+3. rerank integration into advisory payloads,
+4. company-level logit-bias personalization (1-5 company scale).
 
 Exit gates:
 - top-k improvement on low-frequency classes,
@@ -130,7 +132,8 @@ Exit gates:
 Deliver:
 1. constrained decoder for proposed journal/action outputs,
 2. explicit constraint violation taxonomy,
-3. deterministic replay for blocked recommendations.
+3. deterministic replay for blocked recommendations,
+4. low-rank company adapters (`64 -> r -> 64`) for richer personalization.
 
 Exit gates:
 - zero policy-invalid accepted outcomes in evaluation slices.
@@ -140,7 +143,8 @@ Exit gates:
 Deliver:
 1. next-best-action head for click/process prediction,
 2. review routing policy from calibrated uncertainty,
-3. abstain/escalate outputs for low-confidence cases.
+3. abstain/escalate outputs for low-confidence cases,
+4. COA embedding retrieval head migration (company-scoped account sets).
 
 Exit gates:
 - improved review precision,
@@ -173,12 +177,14 @@ Required IDs:
 Sprint A:
 1. ledger-state feature extraction schema and builder,
 2. candidate retrieval index generation,
-3. scorecard extension for candidate recall and rerank lift.
+3. shared trunk + thin head training baseline,
+4. scorecard extension for candidate recall and rerank lift.
 
 Sprint B:
 1. retrieval+rereank in tx+coa advisory path (feature-flagged),
-2. constrained post-processing for proposed accounting actions,
-3. next-best-action prototype head using workflow traces.
+2. per-company logit-bias personalization pass,
+3. constrained post-processing for proposed accounting actions,
+4. next-best-action prototype head using workflow traces.
 
 ## 6. Current Operations and Commands
 
